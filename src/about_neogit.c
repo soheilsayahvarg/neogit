@@ -4,8 +4,7 @@
 
 int about_neogit()
 {
-    printf("neogit\n\n");
-    printf("config\n");
+    printf("\nconfig\n");
     printf("init\n");
     printf("add\n");
     printf("reset\n");
