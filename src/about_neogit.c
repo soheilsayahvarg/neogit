@@ -1,0 +1,17 @@
+#include "includes.h"
+#include "prototypes.h"
+
+int about_neogit()
+{
+    printf("neogit\n\n");
+    printf("config\n");
+    printf("init\n");
+    printf("add\n");
+    printf("reset\n");
+    printf("ststus\n");
+    printf("commit\n");
+    printf("log\n");
+    printf("branch\n");
+    printf("checkout\n");
+    return 1;
+}
