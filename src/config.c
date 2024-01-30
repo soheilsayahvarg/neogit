@@ -7,17 +7,27 @@ int run_config(int argc, char *argv[])
 
     if (strcmp(argv[2], "-global") == 0 && argc == 5)
     {
-        char global_config_address[strlen(NEOGIT_GLOBAL_ADDRESS) + strlen("config") + 1];
-        strcpy(global_config_address, NEOGIT_GLOBAL_ADDRESS);
-        strcat(global_config_address, "config");
-        char global_new_config_address[strlen(NEOGIT_GLOBAL_ADDRESS) + strlen("new_config") + 1];
-        strcpy(global_new_config_address, NEOGIT_GLOBAL_ADDRESS);
-        strcat(global_new_config_address, "new_config");
 
         if (strcmp(argv[3], "user.name") == 0 || strcmp(argv[3], "user.email") == 0)
         {
+            char global_config_address[MAX_ADDRESS_LENGHT];
+            strcpy(global_config_address, NEOGIT_GLOBAL_ADDRESS);
+            strcat(global_config_address, "config");
+            char global_new_config_address[MAX_ADDRESS_LENGHT];
+            strcpy(global_new_config_address, NEOGIT_GLOBAL_ADDRESS);
+            strcat(global_new_config_address, "new_config");
             return creat_config(global_config_address, global_new_config_address, argv[3], argv[4]);
         }
+
+        if (!strncmp(argv[3], "alias.", 6))
+        {
+            char global_alias_address[MAX_ADDRESS_LENGHT] = NEOGIT_GLOBAL_ADDRESS;
+            strcat(global_alias_address, "alias/");
+            return creat_alias(global_alias_address, argv[3], argv[4]);
+        }
+
+        printf("invalid input\n");
+        return 0;
     }
     if (argc == 4)
     {
@@ -27,10 +37,10 @@ int run_config(int argc, char *argv[])
             char neogit_dir_address[MAX_ADDRESS_LENGHT];
             if (find_neogit_dir(neogit_dir_address) == 1)
             {
-                char config_address[strlen(neogit_dir_address) + strlen("config") + 1];
+                char config_address[MAX_ADDRESS_LENGHT];
                 strcpy(config_address, neogit_dir_address);
                 strcat(config_address, "config");
-                char new_config_address[strlen(neogit_dir_address) + strlen("new_config") + 1];
+                char new_config_address[MAX_ADDRESS_LENGHT];
                 strcpy(new_config_address, neogit_dir_address);
                 strcat(new_config_address, "new_config");
 
@@ -39,8 +49,25 @@ int run_config(int argc, char *argv[])
             printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
             return 0;
         }
+
+        if (!strncmp(argv[2], "alias.", 6))
+        {
+            char neogit_dir_address[MAX_ADDRESS_LENGHT];
+            if (find_neogit_dir(neogit_dir_address) == 1)
+            {
+                char alias_address[MAX_ADDRESS_LENGHT];
+                strcpy(alias_address, NEOGIT_GLOBAL_ADDRESS);
+                strcat(alias_address, "alias/");
+                return creat_alias(alias_address, argv[2], argv[3]);
+            }
+            printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+            return 0;
+        }
+
+        printf("invalid inputs.\n");
         return 0;
     }
+
     printf("invalid inputs.\n");
     return 0;
 }
@@ -136,4 +163,9 @@ int creat_config(char config_address[], char new_config_address[], char input1[]
 
     printf("invalid inputs.\n");
     return 0;
+}
+// TODO
+int creat_alias(char alias_address[], char input1[], char input2[])
+{
+    return 1;
 }

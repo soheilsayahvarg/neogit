@@ -107,10 +107,10 @@ int make_neogit_dir(char neogit_dir_address[])
     // make branch
     FILE *branch, *branches;
 
-    char branch_address[strlen(neogit_dir_address) + strlen("branch") + 1];
+    char branch_address[MAX_ADDRESS_LENGHT];
     strcpy(branch_address, neogit_dir_address);
     strcat(branch_address, "branch");
-    char branches_address[strlen(neogit_dir_address) + strlen("branches") + 1];
+    char branches_address[MAX_ADDRESS_LENGHT];
     strcpy(branches_address, neogit_dir_address);
     strcat(branches_address, "branches");
 
@@ -122,7 +122,7 @@ int make_neogit_dir(char neogit_dir_address[])
     fclose(branches);
 
     // make stage
-    char stage_address[strlen(neogit_dir_address) + strlen("stage/") + 1];
+    char stage_address[MAX_ADDRESS_LENGHT];
     strcpy(stage_address, neogit_dir_address);
     strcat(stage_address, "stage/");
     if (mkdir(stage_address, 0755) != 0)
@@ -131,10 +131,19 @@ int make_neogit_dir(char neogit_dir_address[])
     }
 
     // make commits
-    char commits_address[strlen(neogit_dir_address) + strlen("commits/") + 1];
+    char commits_address[MAX_ADDRESS_LENGHT];
     strcpy(commits_address, neogit_dir_address);
     strcat(commits_address, "commits/");
     if (mkdir(commits_address, 0755) != 0)
+    {
+        return 0;
+    }
+
+    // make alias
+    char alias_address[MAX_ADDRESS_LENGHT];
+    strcpy(alias_address, neogit_dir_address);
+    strcat(alias_address, "alias/");
+    if (mkdir(alias_address, 0755) != 0)
     {
         return 0;
     }
