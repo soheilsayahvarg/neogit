@@ -92,7 +92,6 @@ int run_init(int argc, char *argv[])
 
         if (mkdir(cwd, 0755) != 0)
         {
-
             return 0;
         }
         printf("create neogit\n");
@@ -105,6 +104,7 @@ int run_init(int argc, char *argv[])
 
 int make_neogit_dir(char neogit_dir_address[])
 {
+    // make branch
     FILE *branch, *branches;
 
     char branch_address[strlen(neogit_dir_address) + strlen("branch") + 1];
@@ -120,5 +120,24 @@ int make_neogit_dir(char neogit_dir_address[])
     fputs("master", branches);
     fclose(branch);
     fclose(branches);
+
+    // make stage
+    char stage_address[strlen(neogit_dir_address) + strlen("stage/") + 1];
+    strcpy(stage_address, neogit_dir_address);
+    strcat(stage_address, "stage/");
+    if (mkdir(stage_address, 0755) != 0)
+    {
+        return 0;
+    }
+
+    // make commits
+    char commits_address[strlen(neogit_dir_address) + strlen("commits/") + 1];
+    strcpy(commits_address, neogit_dir_address);
+    strcat(commits_address, "commits/");
+    if (mkdir(commits_address, 0755) != 0)
+    {
+        return 0;
+    }
+
     return 1;
 }
