@@ -48,6 +48,6 @@ int main(int argc, char *argv[])
     {
         return run_checkout(argc, argv);
     }
-    printf("Invalid command.\n");
+    printf("invalid command.\n");
     return 0;
 }

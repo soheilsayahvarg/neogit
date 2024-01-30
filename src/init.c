@@ -8,7 +8,7 @@ int find_neogit_dir(char cwd[])
 
     if (getcwd(cwd, MAX_ADDRESS_LENGHT) == NULL)
     {
-        printf("Error getcwd\n");
+        printf("error getcwd\n");
         return 0;
     }
 
@@ -19,7 +19,7 @@ int find_neogit_dir(char cwd[])
         DIR *dir = opendir(".");
         if (dir == NULL)
         {
-            printf("Error opening current directory\n");
+            printf("error opening current directory\n");
             return 0;
         }
         while ((entry = readdir(dir)) != NULL)
@@ -34,7 +34,7 @@ int find_neogit_dir(char cwd[])
 
         if (getcwd(tmp_cwd, sizeof(tmp_cwd)) == NULL)
         {
-            printf("Error getcwd\n");
+            printf("error getcwd\n");
             return 0;
         }
 
@@ -70,5 +70,34 @@ int find_neogit_dir(char cwd[])
 
 int run_init(int argc, char *argv[])
 {
-    return 1;
+    char cwd[MAX_ADDRESS_LENGHT];
+
+    if (getcwd(cwd, sizeof(cwd)) == NULL)
+    {
+        printf("error getcwd\n");
+        return 0;
+    }
+
+    int find = find_neogit_dir(cwd);
+
+    if (find == 1)
+    {
+        printf("neogit repository has already initialized\n");
+        return 0;
+    }
+
+    if (find == -1)
+    {
+        strcat(cwd, "/.neogit");
+
+        if (mkdir(cwd, 0755) != 0)
+        {
+            return 0;
+        }
+        printf("create neogit\n");
+        return 1;
+    }
+
+    printf("bug!\n");
+    return 0;
 }

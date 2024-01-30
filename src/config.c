@@ -24,11 +24,24 @@ int run_config(int argc, char *argv[])
 
         if (strcmp(argv[2], "user.name") == 0 || strcmp(argv[2], "user.email") == 0)
         {
-            return creat_config("edit this", "edit this", argv[2], argv[3]);
+            char neogit_dir_address[MAX_ADDRESS_LENGHT];
+            if (find_neogit_dir(neogit_dir_address) == 1)
+            {
+                char config_address[strlen(neogit_dir_address) + strlen("config") + 1];
+                strcpy(config_address, neogit_dir_address);
+                strcat(config_address, "config");
+                char new_config_address[strlen(neogit_dir_address) + strlen("new_config") + 1];
+                strcpy(new_config_address, neogit_dir_address);
+                strcat(new_config_address, "new_config");
+
+                return creat_config(config_address, new_config_address, argv[2], argv[3]);
+            }
+            printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+            return 0;
         }
         return 0;
     }
-    printf("Invalid inputs.\n");
+    printf("invalid inputs.\n");
     return 0;
 }
 
@@ -42,13 +55,13 @@ int creat_config(char config_address[], char new_config_address[], char input1[]
     {
         if (!strcmp(input2, "nothing"))
         {
-            printf("Sorry, your username cannot be \"nothing\"\n");
+            printf("sorry, your username cannot be \"nothing\"\n");
             return 0;
         }
 
         if (strlen(input1) >= MAX_USERNAME_LENGHT)
         {
-            printf("Sorry, your username cannot be longer than %d characters.\n", MAX_USERNAME_LENGHT - 1);
+            printf("sorry, your username cannot be longer than %d characters.\n", MAX_USERNAME_LENGHT - 1);
             return 0;
         }
 
@@ -84,13 +97,13 @@ int creat_config(char config_address[], char new_config_address[], char input1[]
     {
         if (!strcmp(input2, "nothing"))
         {
-            printf("Sorry, your useremail cannot be \"nothing\"\n");
+            printf("sorry, your useremail cannot be \"nothing\"\n");
             return 0;
         }
 
         if (strlen(input2) >= MAX_USEREMAIL_LENGTH)
         {
-            printf("Sorry, your useremail cannot be longer than %d characters.\n", MAX_USEREMAIL_LENGTH - 1);
+            printf("sorry, your useremail cannot be longer than %d characters.\n", MAX_USEREMAIL_LENGTH - 1);
             return 0;
         }
 
@@ -121,6 +134,6 @@ int creat_config(char config_address[], char new_config_address[], char input1[]
         return 1;
     }
 
-    printf("Invalid inputs.\n");
+    printf("invalid inputs.\n");
     return 0;
 }
