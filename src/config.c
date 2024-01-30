@@ -167,5 +167,28 @@ int creat_config(char config_address[], char new_config_address[], char input1[]
 // TODO
 int creat_alias(char alias_address[], char input1[], char input2[])
 {
+    char alias_name[strlen(input1) - strlen("alias.") + 1];
+    sscanf(input1 + strlen("alias."), "%s", alias_name);
+    strcat(alias_address, alias_name);
+
+    FILE *alias_file;
+    alias_file = fopen(alias_address, "w");
+
+    int pointer = 0;
+    char string[MAX_COMMAND_LENGHT];
+
+    while (pointer <= strlen(string))
+    {
+        sscanf(input2 + pointer, "%s ", string);
+        pointer += strlen(string);
+        puts(string);
+
+        if (strstr(input2 + pointer, " ") == NULL)
+        {
+            break;
+        }
+        pointer = strstr(input2 + pointer, " ") - input2;
+    }
+    fclose(alias_file);
     return 1;
 }
