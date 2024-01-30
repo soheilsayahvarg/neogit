@@ -3,6 +3,8 @@
 
 int about_neogit();
 
+int find_neogit_dir(char cwd[]);
+
 int run_config(int argc, char *argv[]);
 int creat_config(char config_address[], char new_config_address[], char input1[], char input2[]);
 

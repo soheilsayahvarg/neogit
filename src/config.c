@@ -36,7 +36,7 @@ int creat_config(char config_address[], char new_config_address[], char input1[]
 {
     FILE *config, *new_config;
     char old_username[MAX_USERNAME_LENGHT], old_useremail[MAX_USEREMAIL_LENGTH];
-    char line_in_config[MAX_LINE_IN_CONFIG_LENGTH];
+    char line_in_config[MAX_LINE_IN_FILES_LENGTH];
 
     if (!strcmp(input1, "user.name"))
     {
@@ -63,8 +63,8 @@ int creat_config(char config_address[], char new_config_address[], char input1[]
         }
 
         new_config = fopen(new_config_address, "w");
-        fgets(line_in_config, MAX_LINE_IN_CONFIG_LENGTH, config);
-        fgets(line_in_config, MAX_LINE_IN_CONFIG_LENGTH, config);
+        fgets(line_in_config, sizeof(line_in_config), config);
+        fgets(line_in_config, sizeof(line_in_config), config);
 
         sscanf(line_in_config, "useremail : %s", old_useremail);
 
@@ -105,7 +105,7 @@ int creat_config(char config_address[], char new_config_address[], char input1[]
         }
 
         new_config = fopen(new_config_address, "w");
-        fgets(line_in_config, MAX_LINE_IN_CONFIG_LENGTH, config);
+        fgets(line_in_config, sizeof(line_in_config), config);
 
         sscanf(line_in_config, "username : %s", old_username);
 
