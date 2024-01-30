@@ -88,16 +88,37 @@ int run_init(int argc, char *argv[])
 
     if (find == -1)
     {
-        strcat(cwd, "/.neogit");
+        strcat(cwd, "/.neogit/");
 
         if (mkdir(cwd, 0755) != 0)
         {
+
             return 0;
         }
         printf("create neogit\n");
-        return 1;
+        return make_neogit_dir(cwd);
     }
 
     printf("bug!\n");
     return 0;
+}
+
+int make_neogit_dir(char neogit_dir_address[])
+{
+    FILE *branch, *branches;
+
+    char branch_address[strlen(neogit_dir_address) + strlen("branch") + 1];
+    strcpy(branch_address, neogit_dir_address);
+    strcat(branch_address, "branch");
+    char branches_address[strlen(neogit_dir_address) + strlen("branches") + 1];
+    strcpy(branches_address, neogit_dir_address);
+    strcat(branches_address, "branches");
+
+    branch = fopen(branch_address, "w");
+    fputs("master", branch);
+    branches = fopen(branches_address, "w");
+    fputs("master", branches);
+    fclose(branch);
+    fclose(branches);
+    return 1;
 }

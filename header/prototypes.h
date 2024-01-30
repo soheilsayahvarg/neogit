@@ -9,6 +9,7 @@ int run_config(int argc, char *argv[]);
 int creat_config(char config_address[], char new_config_address[], char input1[], char input2[]);
 
 int run_init(int argc, char *argv[]);
+int make_neogit_dir(char neogit_dir_address[]);
 
 int run_add(int argc, char *argv[]);
 
