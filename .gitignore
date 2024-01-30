@@ -30,7 +30,7 @@ tests/
 *.tmp
 
 # User-specific directories
-.vscode/
+
 .idea/
 *.user
 *.suo
@@ -50,7 +50,7 @@ CMakeScripts/
 Testing/
 
 # Visual Studio Code directories
-.vscode/
+
 
 # Windows image file caches
 Thumbs.db
@@ -63,7 +63,7 @@ Desktop.ini
 $RECYCLE.BIN/
 
 # VS Code folders
-.vscode/
+
 
 # WSL
 .local/
