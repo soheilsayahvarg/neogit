@@ -7,8 +7,12 @@ int run_config(int argc, char *argv[])
 
     if (strcmp(argv[2], "-global") == 0 && argc == 5)
     {
-        char global_config_address[] = "//media//soheil//040C50FE0C50EBE4//Soheil//Study//University//CE//FOP//Project//neogit//.neogit-global//config";
-        char global_new_config_address[] = "//media//soheil//040C50FE0C50EBE4//Soheil//Study//University//CE//FOP//Project//neogit//.neogit-global//new-config";
+        char global_config_address[strlen(NEOGIT_GLOBAL_ADDRESS) + strlen("config") + 1];
+        strcpy(global_config_address, NEOGIT_GLOBAL_ADDRESS);
+        strcat(global_config_address, "config");
+        char global_new_config_address[strlen(NEOGIT_GLOBAL_ADDRESS) + strlen("new_config") + 1];
+        strcpy(global_new_config_address, NEOGIT_GLOBAL_ADDRESS);
+        strcat(global_new_config_address, "new_config");
 
         if (strcmp(argv[3], "user.name") == 0 || strcmp(argv[3], "user.email") == 0)
         {
