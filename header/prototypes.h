@@ -22,6 +22,9 @@ int run_reset(int argc, char *argv[]);
 
 int run_commit(int argc, char *argv[]);
 
+int run_branch(int argc, char *argv[]);
+int add_branch(char branch_name[], char neogit_dir_address[]);
+
 int run_checkout(int argc, char *argv[]);
 
 #endif

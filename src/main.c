@@ -28,21 +28,39 @@ int main(int argc, char *argv[])
     {
         return run_config(argc, argv);
     }
+
     if (!strcmp(argv[1], "init"))
     {
         return run_init(argc, argv);
     }
+
     if (!strcmp(argv[1], "add"))
     {
         return run_add(argc, argv);
     }
+
     if (!strcmp(argv[1], "reset"))
     {
         return run_reset(argc, argv);
     }
+
+    if (!strcmp(argv[1], "status"))
+    {
+        return 1;
+    }
+
     if (!strcmp(argv[1], "commit"))
     {
         return run_commit(argc, argv);
+    }
+    if (!strcmp(argv[1], "log"))
+    {
+        return 1;
+    }
+
+    if (!strcmp(argv[1], "branch"))
+    {
+        return run_branch(argc, argv);
     }
     if (!strcmp(argv[1], "checkout"))
     {
