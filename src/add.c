@@ -109,6 +109,16 @@ int add_to_stage(char file_name[])
             strcat(command, file_address);
             strcat(command, "\" \"");
             strcat(command, neogit_dir_address);
+
+            if (entry->d_type == 4)
+            {
+                while (command[strlen(command) - 1] != '/')
+                {
+                    command[strlen(command) - 1] = '\0';
+                }
+                command[strlen(command) - 1] = '\0';
+            }
+
             strcat(command, "\"");
 
             if (!system(command))
@@ -151,6 +161,7 @@ int add_redo()
             system(command);
         }
         printf("redo all file\n");
+        return 1;
     }
 
     printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
