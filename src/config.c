@@ -186,7 +186,7 @@ int creat_alias(char alias_address[], char input1[], char input2[])
             pointer++;
         }
 
-        sscanf(input2 + pointer, "%s", &string);
+        sscanf(input2 + pointer, "%s", string);
         pointer += strlen(string);
         fprintf(alias_file, "%s\n", string);
     }
