@@ -149,7 +149,11 @@ int add_redo()
         strcat(all_stage_address, "all_stage");
 
         FILE *all_stage_file;
-        all_stage_file = fopen(all_stage_address, "r");
+        if ((all_stage_file = fopen(all_stage_address, "r")) == NULL)
+        {
+            printf("nothing add to stage\n");
+            return 0;
+        }
 
         char command[MAX_BASH_COMMAND];
         while (fgets(command, sizeof(command), all_stage_file))
