@@ -107,9 +107,12 @@ int add_to_stage(char file_name[])
             strcat(command, neogit_dir_address);
             strcat(command, "\"");
 
-            system(command);
-            printf("add %s to stage\n", file_name);
-            return 1;
+            if (!system(command))
+            {
+                printf("add %s to stage\n", file_name);
+                return 1;
+            }
+            return 0;
         }
     }
     printf("not found \"%s\"\n", file_name);
