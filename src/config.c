@@ -56,7 +56,7 @@ int run_config(int argc, char *argv[])
             if (find_neogit_dir(neogit_dir_address) == 1)
             {
                 char alias_address[MAX_ADDRESS_LENGHT];
-                strcpy(alias_address, NEOGIT_GLOBAL_ADDRESS);
+                strcpy(alias_address, neogit_dir_address);
                 strcat(alias_address, "alias/");
                 return creat_alias(alias_address, argv[2], argv[3]);
             }
@@ -167,28 +167,31 @@ int creat_config(char config_address[], char new_config_address[], char input1[]
 // TODO
 int creat_alias(char alias_address[], char input1[], char input2[])
 {
+
     char alias_name[strlen(input1) - strlen("alias.") + 1];
     sscanf(input1 + strlen("alias."), "%s", alias_name);
     strcat(alias_address, alias_name);
 
     FILE *alias_file;
+
     alias_file = fopen(alias_address, "w");
 
     int pointer = 0;
     char string[MAX_COMMAND_LENGHT];
 
-    while (pointer <= strlen(string))
+    while (pointer < strlen(input2))
     {
-        sscanf(input2 + pointer, "%s ", string);
-        pointer += strlen(string);
-        puts(string);
-
-        if (strstr(input2 + pointer, " ") == NULL)
+        while (input2[pointer] == ' ')
         {
-            break;
+            pointer++;
         }
-        pointer = strstr(input2 + pointer, " ") - input2;
+
+        sscanf(input2 + pointer, "%s", &string);
+        pointer += strlen(string);
+        fprintf(alias_file, "%s\n", string);
     }
+
     fclose(alias_file);
+    printf("set \"%s\" command to \"%s\"\n", alias_name, input2);
     return 1;
 }
