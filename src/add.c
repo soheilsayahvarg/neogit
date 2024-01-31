@@ -10,7 +10,7 @@ int run_add(int argc, char *argv[])
         printf("please specify a file\n");
         return 0;
     }
-    // TODO
+
     if (!strcmp(argv[2], "-redo"))
     {
         if (argc != 3)
@@ -43,7 +43,7 @@ int run_add(int argc, char *argv[])
         int depth = 0;
         sscanf(argv[3], "%d", &depth);
 
-        return 1;
+        return add_n(depth);
     }
 
     for (int i = 2; i < argc; i++)
@@ -170,4 +170,91 @@ int add_redo()
 
     printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
     return 0;
+}
+
+int add_n(int depth)
+{
+    char cwd[MAX_ADDRESS_LENGHT];
+    if (getcwd(cwd, MAX_ADDRESS_LENGHT) == NULL)
+    {
+        printf("error getcwd\n");
+        return 0;
+    }
+
+    char first_cwd[MAX_ADDRESS_LENGHT];
+    strcpy(first_cwd, cwd);
+
+    if (depth == 0)
+    {
+        printf("invalid input\n");
+        chdir(first_cwd);
+        return 0;
+    }
+
+    if (depth == 1)
+    {
+        struct dirent *entry;
+        DIR *dir = opendir(".");
+        if (dir == NULL)
+        {
+            printf("error opening current directory\n");
+            chdir(first_cwd);
+            return 0;
+        }
+
+        while ((entry = readdir(dir)) != NULL)
+        {
+            char file_address[MAX_ADDRESS_LENGHT];
+            getcwd(file_address, sizeof(file_address));
+            strcat(file_address, "/");
+            strcat(file_address, entry->d_name);
+
+            char neogit_dir_address[MAX_ADDRESS_LENGHT];
+
+            if (find_neogit_dir(neogit_dir_address) != 1)
+            {
+                printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+                chdir(first_cwd);
+                return 0;
+            }
+
+            int len = strlen(neogit_dir_address) - strlen(".neogit/");
+            strcat(neogit_dir_address, "stage/");
+
+            for (int i = len; i < strlen(file_address); i++)
+            {
+                int lenght = strlen(neogit_dir_address);
+                neogit_dir_address[lenght] = file_address[i];
+                neogit_dir_address[lenght + 1] = '\0';
+            }
+
+            printf("\"%s\" : ", entry->d_name);
+            if (entry->d_type == 8)
+            {
+                FILE *file;
+                if ((file = fopen(neogit_dir_address, "r")) == NULL)
+                {
+                    printf("-\n");
+                }
+                else
+                {
+                    printf("+\n");
+                }
+            }
+            else
+            {
+                DIR *dir;
+                if ((dir = opendir(neogit_dir_address)) == NULL)
+                {
+                    printf("-\n");
+                }
+                else
+                {
+                    printf("+\n");
+                }
+            }
+            chdir(first_cwd);
+            return 1;
+        }
+    }
 }
