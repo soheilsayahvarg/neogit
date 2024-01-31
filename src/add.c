@@ -22,11 +22,6 @@ int run_add(int argc, char *argv[])
         return 1;
     }
 
-    if (argc == 3)
-    {
-        return add_to_stage(argv[2]);
-    }
-
     if (!strcmp(argv[2], "-f"))
     {
 
@@ -50,35 +45,73 @@ int run_add(int argc, char *argv[])
 
         return 1;
     }
+
+    for (int i = 2; i < argc; i++)
+    {
+        add_to_stage(argv[i]);
+    }
+
+    return 1;
 }
 
-int add_to_stage(char filepath[])
+int add_to_stage(char file_name[])
 {
-    /* it's not over yet.
-    FILE *file = fopen(".neogit/staging", "r");
-    if (file == NULL)
-        return 0;
-    char line[MAX_LINE_IN_FILES_LENGTH];
-    while (fgets(line, sizeof(line), file) != NULL)
+    struct dirent *entry;
+    DIR *dir = opendir(".");
+    if (dir == NULL)
     {
-        int length = strlen(line);
-
-        if (length > 0 && line[length - 1] == '\n')
-        {
-            line[length - 1] = '\0';
-        }
-
-        if (strcmp(filepath, line) == 0)
-            return 0;
-    }
-    fclose(file);
-
-    file = fopen(".neogit/staging", "a");
-    if (file == NULL)
+        printf("error opening current directory\n");
         return 0;
+    }
 
-    fprintf(file, "%s\n", filepath);
-    fclose(file);
-    */
-    return 1;
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (!strcmp(entry->d_name, file_name))
+        {
+            // copy file
+            char file_address[MAX_ADDRESS_LENGHT];
+            getcwd(file_address, sizeof(file_address));
+            strcat(file_address, "/");
+            strcat(file_address, file_name);
+
+            char neogit_dir_address[MAX_ADDRESS_LENGHT];
+
+            if (find_neogit_dir(neogit_dir_address) != 1)
+            {
+                printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+                return 0;
+            }
+
+            int len = strlen(neogit_dir_address) - strlen(".neogit/");
+            strcat(neogit_dir_address, "stage/");
+
+            for (int i = len; i < strlen(file_address); i++)
+            {
+                int lenght = strlen(neogit_dir_address);
+                neogit_dir_address[lenght] = file_address[i];
+                neogit_dir_address[lenght + 1] = '\0';
+            }
+
+            char command[MAX_BASH_COMMAND];
+
+            if (entry->d_type == 4)
+            {
+                strcpy(command, "cp -r \"");
+            }
+            else
+            {
+                strcpy(command, "cp \"");
+            }
+            strcat(command, file_address);
+            strcat(command, "\" \"");
+            strcat(command, neogit_dir_address);
+            strcat(command, "\"");
+
+            system(command);
+            printf("add %s to stage\n", file_name);
+            return 1;
+        }
+    }
+    printf("not found \"%s\"\n", file_name);
+    return 0;
 }

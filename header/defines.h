@@ -1,6 +1,8 @@
 #ifndef _DEFINES_H
 #define _DEFINES_H
 
+#define MAX_BASH_COMMAND 2000
+
 #define MAX_ADDRESS_LENGHT 1000
 
 #define MAX_COMMAND_LENGHT 1000

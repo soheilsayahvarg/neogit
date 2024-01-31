@@ -16,7 +16,7 @@ int run_init(int argc, char *argv[]);
 int make_neogit_dir(char neogit_dir_address[]);
 
 int run_add(int argc, char *argv[]);
-int add_to_stage(char filepath[]);
+int add_to_stage(char file_name[]);
 
 int run_reset(int argc, char *argv[]);
 
