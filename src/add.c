@@ -45,8 +45,9 @@ int run_add(int argc, char *argv[])
             return 0;
         }
 
-        int depth = (int)argv[3];
-        printf("depth = %d\n", depth);
+        int depth = 0;
+        sscanf(argv[3], "%d", &depth);
+
         return 1;
     }
 }
