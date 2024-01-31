@@ -10,7 +10,7 @@ int run_add(int argc, char *argv[])
         printf("please specify a file\n");
         return 0;
     }
-
+    // TODO
     if (!strcmp(argv[2], "-redo"))
     {
         if (argc != 3)
@@ -19,7 +19,7 @@ int run_add(int argc, char *argv[])
             return 0;
         }
 
-        return 1;
+        return add_redo();
     }
 
     if (!strcmp(argv[2], "-f"))
@@ -31,7 +31,7 @@ int run_add(int argc, char *argv[])
         }
         return 1;
     }
-
+    // TODO
     if (!strcmp(argv[2], "-n"))
     {
         if (argc != 4)
@@ -82,6 +82,10 @@ int add_to_stage(char file_name[])
                 return 0;
             }
 
+            char all_stage_address[MAX_ADDRESS_LENGHT];
+            strcpy(all_stage_address, neogit_dir_address);
+            strcat(all_stage_address, "all_stage");
+
             int len = strlen(neogit_dir_address) - strlen(".neogit/");
             strcat(neogit_dir_address, "stage/");
 
@@ -110,11 +114,45 @@ int add_to_stage(char file_name[])
             if (!system(command))
             {
                 printf("add %s to stage\n", file_name);
+
+                FILE *all_stage_file;
+                all_stage_file = fopen(all_stage_address, "a");
+                fprintf(all_stage_file, "%s\n", command);
+
                 return 1;
             }
             return 0;
         }
     }
     printf("not found \"%s\"\n", file_name);
+    return 0;
+}
+
+int add_redo()
+{
+    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+
+    if (find_neogit_dir(neogit_dir_address) == 1)
+    {
+        char all_stage_address[MAX_ADDRESS_LENGHT];
+        strcpy(all_stage_address, neogit_dir_address);
+        strcat(all_stage_address, "all_stage");
+
+        FILE *all_stage_file;
+        all_stage_file = fopen(all_stage_address, "r");
+
+        char command[MAX_BASH_COMMAND];
+        while (fgets(command, sizeof(command), all_stage_file))
+        {
+            if (command[strlen(command) - 1] == '\n')
+            {
+                command[strlen(command) - 1] == '\0';
+            }
+            system(command);
+        }
+        printf("redo all file\n");
+    }
+
+    printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
     return 0;
 }
