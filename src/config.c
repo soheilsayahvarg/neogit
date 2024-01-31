@@ -164,7 +164,7 @@ int creat_config(char config_address[], char new_config_address[], char input1[]
     printf("invalid inputs.\n");
     return 0;
 }
-// TODO
+
 int creat_alias(char alias_address[], char input1[], char input2[])
 {
 
@@ -194,4 +194,74 @@ int creat_alias(char alias_address[], char input1[], char input2[])
     fclose(alias_file);
     printf("set \"%s\" command to \"%s\"\n", alias_name, input2);
     return 1;
+}
+
+// TODO
+int read_alias(char command[])
+{
+    FILE *alias_file;
+
+    // check global alias
+    char global_alias_address[MAX_ADDRESS_LENGHT] = NEOGIT_GLOBAL_ADDRESS;
+    strcat(global_alias_address, "alias/");
+    strcat(global_alias_address, command);
+
+    alias_file = fopen(global_alias_address, "r");
+    if (alias_file != NULL)
+    {
+        printf("found command in global alias\n");
+
+        char string[MAX_COMMAND_LENGHT];
+
+        int argc = 1;
+        char argv[MAX_NUMBER_OF_COMMNAD][MAX_COMMAND_LENGHT];
+
+        while (fgets(string, sizeof(string), alias_file) != NULL)
+        {
+            if (string[strlen(string) - 1] == '\n')
+            {
+                string[strlen(string) - 1] = '\0';
+            }
+            strcpy(argv[argc], string);
+            argc++;
+        }
+        return 1;
+    }
+
+    // check alias
+    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    if (find_neogit_dir(neogit_dir_address) == 1)
+    {
+        char alias_address[MAX_ADDRESS_LENGHT];
+        strcpy(alias_address, neogit_dir_address);
+        strcat(alias_address, "alias/");
+        strcat(alias_address, command);
+
+        alias_file = fopen(alias_address, "r");
+        if (alias_file != NULL)
+        {
+            printf("found command in alias\n");
+
+            char string[MAX_COMMAND_LENGHT];
+
+            int argc = 1;
+            char argv[MAX_NUMBER_OF_COMMNAD][MAX_COMMAND_LENGHT];
+
+            while (fgets(string, sizeof(string), alias_file) != NULL)
+            {
+                if (string[strlen(string) - 1] == '\n')
+                {
+                    string[strlen(string) - 1] = '\0';
+                }
+                strcpy(argv[argc], string);
+                argc++;
+            }
+            return 1;
+        }
+
+        printf("invalid command\n");
+        return 0;
+    }
+    printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+    return 0;
 }

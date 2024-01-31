@@ -48,6 +48,12 @@ int main(int argc, char *argv[])
     {
         return run_checkout(argc, argv);
     }
+
+    if (argc == 2)
+    {
+        return read_alias(argv[1]);
+    }
+
     printf("invalid command.\n");
     return 0;
 }
