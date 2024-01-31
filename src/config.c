@@ -35,6 +35,7 @@ int run_config(int argc, char *argv[])
         if (strcmp(argv[2], "user.name") == 0 || strcmp(argv[2], "user.email") == 0)
         {
             char neogit_dir_address[MAX_ADDRESS_LENGHT];
+
             if (find_neogit_dir(neogit_dir_address) == 1)
             {
                 char config_address[MAX_ADDRESS_LENGHT];
@@ -53,6 +54,7 @@ int run_config(int argc, char *argv[])
         if (!strncmp(argv[2], "alias.", 6))
         {
             char neogit_dir_address[MAX_ADDRESS_LENGHT];
+
             if (find_neogit_dir(neogit_dir_address) == 1)
             {
                 char alias_address[MAX_ADDRESS_LENGHT];
@@ -208,6 +210,7 @@ int read_alias(char command[])
 
     // check alias
     char neogit_dir_address[MAX_ADDRESS_LENGHT];
+
     if (find_neogit_dir(neogit_dir_address) == 1)
     {
         char alias_address[MAX_ADDRESS_LENGHT];
