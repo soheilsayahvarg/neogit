@@ -31,7 +31,7 @@ int run_add(int argc, char *argv[])
         }
         return 1;
     }
-    // TODO
+
     if (!strcmp(argv[2], "-n"))
     {
         if (argc != 4)
@@ -43,7 +43,7 @@ int run_add(int argc, char *argv[])
         int depth = 0;
         sscanf(argv[3], "%d", &depth);
 
-        return add_n(depth);
+        return add_n(depth, 0);
     }
 
     for (int i = 2; i < argc; i++)
@@ -172,7 +172,7 @@ int add_redo()
     return 0;
 }
 
-int add_n(int depth)
+int add_n(int depth, int number_of_tab)
 {
     struct dirent *entry;
     char first_cwd[MAX_ADDRESS_LENGHT];
@@ -227,7 +227,10 @@ int add_n(int depth)
             neogit_dir_address[lenght] = file_address[i];
             neogit_dir_address[lenght + 1] = '\0';
         }
-
+        for (int i = 0; i < number_of_tab; i++)
+        {
+            printf("\t");
+        }
         if (entry->d_type == 8)
         {
             FILE *file;
@@ -259,11 +262,10 @@ int add_n(int depth)
             }
             else
             {
-                printf("\"%s\":_________\n", entry->d_name);
+                printf("\"%s\":\n", entry->d_name);
                 chdir(entry->d_name);
-                add_n(depth - 1);
+                add_n(depth - 1, number_of_tab + 1);
                 chdir(first_cwd);
-                printf("\"%s\"_________\n", entry->d_name);
             }
         }
         chdir(first_cwd);
