@@ -51,14 +51,36 @@ int run_commit(int argc, char *argv[])
 // TODO
 int creat_commit(char message[])
 {
-    printf("messeage : \"%s\"\n", message);
-    int last_commit_id = 0;
+    struct dirent *entry;
+    DIR *dir;
+    char command[MAX_BASH_COMMAND];
+
     char neogit_dir_address[MAX_ADDRESS_LENGHT];
+
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
         return 0;
     }
+    // delete all_stage
+    char all_stage_address[MAX_ADDRESS_LENGHT];
+    strcpy(all_stage_address, neogit_dir_address);
+    strcat(all_stage_address, "all_stage");
+    FILE *all_stage_file;
+    if ((all_stage_file = fopen(all_stage_address, "r")) == NULL)
+    {
+        printf("stage is empty\n");
+        return 0;
+    }
+    fclose(all_stage_file);
+    strcpy(command, "rm -f \"");
+    strcat(command, all_stage_address);
+    strcat(command, "\"");
+    system(command);
+
+    // read last commit id
+    int last_commit_id = 0;
+    char last_commit_id_address[MAX_ADDRESS_LENGHT];
     strcpy(last_commit_id_address, neogit_dir_address);
     strcat(last_commit_id_address, "last_commit_id");
     FILE *last_commit_id_file = fopen(last_commit_id_address, "r");
@@ -68,6 +90,107 @@ int creat_commit(char message[])
     last_commit_id_file = fopen(last_commit_id_address, "w");
     fprintf(last_commit_id_file, "%d\n", last_commit_id);
 
+    // make dir new commit
+    char new_commit_files_address[MAX_ADDRESS_LENGHT];
+    strcpy(new_commit_files_address, neogit_dir_address);
+    strcat(new_commit_files_address, "commits_files/commit ");
+    char last_commit_id_string[MAX_NUMBERS_DIGITS];
+    sprintf(last_commit_id_string, "%d/", last_commit_id);
+    strcat(new_commit_files_address, last_commit_id_string);
+    mkdir(new_commit_files_address, 0755);
+
+    char file_path_1[MAX_ADDRESS_LENGHT];
+    char file_path_2[MAX_ADDRESS_LENGHT];
+    if (last_commit_id > 1)
+    {
+        // copy old commit
+        char old_commit_files_address[MAX_ADDRESS_LENGHT];
+        strcpy(old_commit_files_address, neogit_dir_address);
+        strcat(old_commit_files_address, "commits_files/commit ");
+        char old_commit_id_string[MAX_NUMBERS_DIGITS];
+        sprintf(old_commit_id_string, "%d/", last_commit_id - 1);
+        strcat(old_commit_files_address, old_commit_id_string);
+        dir = opendir(old_commit_files_address);
+
+        while ((entry = readdir(dir)) != NULL)
+        {
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            {
+                continue;
+            }
+            strcpy(file_path_1, old_commit_files_address);
+            strcat(file_path_1, entry->d_name);
+            strcpy(file_path_2, new_commit_files_address);
+
+            if (entry->d_type == 4)
+            {
+                strcpy(command, "cp -r \"");
+                strcat(command, file_path_1);
+                strcat(command, "\" \"");
+                strcat(command, file_path_2);
+                strcat(command, "\"");
+            }
+            else
+            {
+                strcpy(command, "cp \"");
+                strcat(command, file_path_1);
+                strcat(command, "\" \"");
+                strcat(command, file_path_2);
+                strcat(command, entry->d_name);
+                strcat(command, "\"");
+            }
+            system(command);
+        }
+    }
+
+    // copy stage
+    char stage_files_address[MAX_ADDRESS_LENGHT];
+    strcpy(stage_files_address, neogit_dir_address);
+    strcat(stage_files_address, "stage/");
+    dir = opendir(stage_files_address);
+
+    char command_delete[MAX_BASH_COMMAND];
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+        {
+            continue;
+        }
+        strcpy(file_path_1, stage_files_address);
+        strcat(file_path_1, entry->d_name);
+        strcpy(file_path_2, new_commit_files_address);
+
+        if (entry->d_type == 4)
+        {
+            strcpy(command, "cp -r \"");
+            strcat(command, file_path_1);
+            strcat(command, "\" \"");
+            strcat(command, file_path_2);
+            strcat(command, "\"");
+
+            strcpy(command_delete, "rm -rf \"");
+            strcat(command_delete, file_path_1);
+            strcat(command_delete, "\"");
+        }
+        else
+        {
+            strcpy(command, "cp \"");
+            strcat(command, file_path_1);
+            strcat(command, "\" \"");
+            strcat(command, file_path_2);
+            strcat(command, entry->d_name);
+            strcat(command, "\"");
+
+            strcpy(command_delete, "rm -f \"");
+            strcat(command_delete, file_path_1);
+            strcat(command_delete, "\"");
+        }
+
+        system(command);
+        system(command_delete);
+    }
+
+    printf("commit files\n");
     return 1;
 }
 
