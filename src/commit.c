@@ -48,10 +48,19 @@ int run_commit(int argc, char *argv[])
     printf("invalid input\n");
     return 0;
 }
-
+// TODO
 int creat_commit(char message[])
 {
     printf("messeage : \"%s\"\n", message);
+    int last_commit_id = 0;
+
+    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+
+    if (find_neogit_dir(neogit_dir_address) != 1)
+    {
+        printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+        return 0;
+    }
     return 1;
 }
 

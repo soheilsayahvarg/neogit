@@ -184,7 +184,6 @@ int creat_alias(char alias_address[], char input1[], char input2[])
     return 1;
 }
 
-// TODO
 int read_alias(char command[])
 {
     char alias_command[MAX_COMMAND_LENGHT];
