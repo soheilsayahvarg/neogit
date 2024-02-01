@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
     // log
     if (!strcmp(argv[1], "log"))
     {
-        return 1;
+        return run_log(argc, argv);
     }
     // branch
     if (!strcmp(argv[1], "branch"))

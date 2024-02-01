@@ -31,6 +31,8 @@ int run_set_message(int argc, char *argv[]);
 int run_replace_message(int argc, char *argv[]);
 int run_remove_message(int argc, char *argv[]);
 
+int run_log(int argc, char *argv[]);
+
 int run_branch(int argc, char *argv[]);
 int add_branch(char branch_name[], char neogit_dir_address[]);
 int read_branch(char branch_name[]);
