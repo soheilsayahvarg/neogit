@@ -174,13 +174,13 @@ int add_redo()
 
 int add_n(int depth)
 {
+    struct dirent *entry;
     char first_cwd[MAX_ADDRESS_LENGHT];
     if (getcwd(first_cwd, MAX_ADDRESS_LENGHT) == NULL)
     {
         printf("error getcwd\n");
         return 0;
     }
-    chdir(first_cwd);
 
     if (depth <= 0)
     {
@@ -191,8 +191,7 @@ int add_n(int depth)
 
     if (depth == 1)
     {
-        struct dirent *entry;
-        DIR *dir = opendir(first_cwd);
+        DIR *dir = opendir(".");
         if (dir == NULL)
         {
             printf("error opening current directory\n");
@@ -202,7 +201,10 @@ int add_n(int depth)
 
         while ((entry = readdir(dir)) != NULL)
         {
-            printf("name : %s\n", entry->d_name);
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0 || strcmp(entry->d_name, ".neogit") == 0)
+            {
+                continue;
+            }
 
             char file_address[MAX_ADDRESS_LENGHT];
             getcwd(file_address, sizeof(file_address));
@@ -254,7 +256,6 @@ int add_n(int depth)
                 }
             }
             chdir(first_cwd);
-            return 1;
         }
     }
 }
