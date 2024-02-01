@@ -189,52 +189,66 @@ int add_n(int depth)
         return 0;
     }
 
-    if (depth == 1)
+    DIR *dir = opendir(".");
+    if (dir == NULL)
     {
-        DIR *dir = opendir(".");
-        if (dir == NULL)
+        printf("error opening current directory\n");
+        chdir(first_cwd);
+        return 0;
+    }
+
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0 || strcmp(entry->d_name, ".neogit") == 0)
         {
-            printf("error opening current directory\n");
+            continue;
+        }
+
+        char file_address[MAX_ADDRESS_LENGHT];
+        getcwd(file_address, sizeof(file_address));
+        strcat(file_address, "/");
+        strcat(file_address, entry->d_name);
+
+        char neogit_dir_address[MAX_ADDRESS_LENGHT];
+
+        if (find_neogit_dir(neogit_dir_address) != 1)
+        {
+            printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
             chdir(first_cwd);
             return 0;
         }
 
-        while ((entry = readdir(dir)) != NULL)
+        int len = strlen(neogit_dir_address) - strlen(".neogit/");
+        strcat(neogit_dir_address, "stage/");
+
+        for (int i = len; i < strlen(file_address); i++)
         {
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0 || strcmp(entry->d_name, ".neogit") == 0)
-            {
-                continue;
-            }
+            int lenght = strlen(neogit_dir_address);
+            neogit_dir_address[lenght] = file_address[i];
+            neogit_dir_address[lenght + 1] = '\0';
+        }
 
-            char file_address[MAX_ADDRESS_LENGHT];
-            getcwd(file_address, sizeof(file_address));
-            strcat(file_address, "/");
-            strcat(file_address, entry->d_name);
-
-            char neogit_dir_address[MAX_ADDRESS_LENGHT];
-
-            if (find_neogit_dir(neogit_dir_address) != 1)
-            {
-                printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
-                chdir(first_cwd);
-                return 0;
-            }
-
-            int len = strlen(neogit_dir_address) - strlen(".neogit/");
-            strcat(neogit_dir_address, "stage/");
-
-            for (int i = len; i < strlen(file_address); i++)
-            {
-                int lenght = strlen(neogit_dir_address);
-                neogit_dir_address[lenght] = file_address[i];
-                neogit_dir_address[lenght + 1] = '\0';
-            }
+        if (entry->d_type == 8)
+        {
+            FILE *file;
 
             printf("\"%s\" : ", entry->d_name);
-            if (entry->d_type == 8)
+            if ((file = fopen(neogit_dir_address, "r")) == NULL)
             {
-                FILE *file;
-                if ((file = fopen(neogit_dir_address, "r")) == NULL)
+                printf("-\n");
+            }
+            else
+            {
+                printf("+\n");
+            }
+        }
+        else
+        {
+            if (depth == 1)
+            {
+                DIR *dir;
+                printf("\"%s\" : ", entry->d_name);
+                if ((dir = opendir(neogit_dir_address)) == NULL)
                 {
                     printf("-\n");
                 }
@@ -245,17 +259,13 @@ int add_n(int depth)
             }
             else
             {
-                DIR *dir;
-                if ((dir = opendir(neogit_dir_address)) == NULL)
-                {
-                    printf("-\n");
-                }
-                else
-                {
-                    printf("+\n");
-                }
+                printf("\"%s\":_________\n", entry->d_name);
+                chdir(entry->d_name);
+                add_n(depth - 1);
+                chdir(first_cwd);
+                printf("\"%s\"_________\n", entry->d_name);
             }
-            chdir(first_cwd);
         }
+        chdir(first_cwd);
     }
 }
