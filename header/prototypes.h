@@ -21,6 +21,8 @@ int add_redo();
 int add_n(int depth);
 
 int run_reset(int argc, char *argv[]);
+int reset_in_stage(char file_name[]);
+int reset_undo();
 
 int run_commit(int argc, char *argv[]);
 
