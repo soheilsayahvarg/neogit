@@ -159,7 +159,7 @@ int make_neogit_dir(char neogit_dir_address[])
     strcpy(last_commit_id_address, neogit_dir_address);
     strcat(last_commit_id_address, "last_commit_id");
     FILE *last_commit_id_file = fopen(last_commit_id_address, "w");
-    fprintf(last_commit_id_file, "last commit id : %d\n", 0);
+    fprintf(last_commit_id_file, "%d\n", 0);
 
     // make alias
     char alias_address[MAX_ADDRESS_LENGHT];
