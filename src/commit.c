@@ -215,6 +215,8 @@ int creat_commit(char message[])
     fprintf(commit_data_file, "username : %s, useremail : %s\n", username, useremail);
     fprintf(commit_data_file, "branch : %s\n", branch_name);
     fprintf(commit_data_file, "message : %s\n", message);
+    time_t now = time(NULL);
+    fprintf(commit_data_file, "date : %s\n", asctime(localtime(&now)));
     fclose(commit_data_file);
 
     printf("commit files\n");
