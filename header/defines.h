@@ -17,6 +17,8 @@
 
 #define MAX_COMMIT_MESSAGE_LENGHT 72
 
+#define MAX_BRANCH_NAME_LENGHT 100
+
 #define NEOGIT_GLOBAL_ADDRESS "/home/soheil/Drive_D/Soheil/Study/University/CE/FOP/Project/neogit/.neogit-global/"
 
 #endif

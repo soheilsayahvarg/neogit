@@ -30,7 +30,7 @@ int run_branch(int argc, char *argv[])
             return 0;
         }
 
-        char line_in_branch[MAX_LINE_IN_FILES_LENGTH];
+        char line_in_branch[MAX_BRANCH_NAME_LENGHT];
         fgets(line_in_branch, sizeof(line_in_branch), branch_file);
         printf("your branch is %s\n", line_in_branch);
         printf("all branches:\n");
@@ -51,8 +51,6 @@ int run_branch(int argc, char *argv[])
 
     printf("invalid input\n");
     return 0;
-
-    ;
 }
 
 int add_branch(char branch_name[], char neogit_dir_address[])
@@ -64,7 +62,7 @@ int add_branch(char branch_name[], char neogit_dir_address[])
     FILE *branches_file;
     branches_file = fopen(branches_address, "r");
 
-    char line_in_branches[MAX_LINE_IN_FILES_LENGTH];
+    char line_in_branches[MAX_BRANCH_NAME_LENGHT];
 
     while (fgets(line_in_branches, sizeof(line_in_branches), branches_file))
     {
@@ -86,5 +84,32 @@ int add_branch(char branch_name[], char neogit_dir_address[])
     fclose(branches_file);
 
     printf("create \"%s\" branch\n", branch_name);
+    return 1;
+}
+
+int read_branch(char branch_name[])
+{
+    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    if (find_neogit_dir(neogit_dir_address) != 1)
+    {
+        printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+        return 0;
+    }
+
+    char branch_address[MAX_ADDRESS_LENGHT];
+    strcpy(branch_address, neogit_dir_address);
+    strcat(branch_address, "branch");
+    FILE *branch_file;
+
+    if ((branch_file = fopen(branch_address, "r")) == NULL)
+    {
+        printf("not found branch file\n");
+        return 0;
+    }
+    fgets(branch_name, MAX_BRANCH_NAME_LENGHT, branch_file);
+    if (branch_name[strlen(branch_name) - 1] == '\n')
+    {
+        branch_name[strlen(branch_name) - 1] = '\0';
+    }
     return 1;
 }

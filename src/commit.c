@@ -62,6 +62,13 @@ int creat_commit(char message[])
         return 0;
     }
 
+    char branch_name[MAX_BRANCH_NAME_LENGHT];
+    if (!read_branch(branch_name))
+    {
+        return 0;
+    }
+    printf("username : %s and useremail : %s and branch_name : %s\n", username, useremail, branch_name);
+
     char neogit_dir_address[MAX_ADDRESS_LENGHT];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
