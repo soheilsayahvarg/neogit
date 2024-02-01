@@ -35,7 +35,6 @@ int run_config(int argc, char *argv[])
         if (strcmp(argv[2], "user.name") == 0 || strcmp(argv[2], "user.email") == 0)
         {
             char neogit_dir_address[MAX_ADDRESS_LENGHT];
-
             if (find_neogit_dir(neogit_dir_address) == 1)
             {
                 char config_address[MAX_ADDRESS_LENGHT];
@@ -54,7 +53,6 @@ int run_config(int argc, char *argv[])
         if (!strncmp(argv[2], "alias.", 6))
         {
             char neogit_dir_address[MAX_ADDRESS_LENGHT];
-
             if (find_neogit_dir(neogit_dir_address) == 1)
             {
                 char alias_address[MAX_ADDRESS_LENGHT];
@@ -209,7 +207,6 @@ int read_alias(char command[])
 
     // check alias
     char neogit_dir_address[MAX_ADDRESS_LENGHT];
-
     if (find_neogit_dir(neogit_dir_address) == 1)
     {
         char alias_address[MAX_ADDRESS_LENGHT];
@@ -232,5 +229,60 @@ int read_alias(char command[])
         return 0;
     }
     printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+    return 0;
+}
+
+int read_user_config(char username[], char useremail[])
+{
+    char line_in_config[MAX_LINE_IN_FILES_LENGTH];
+    FILE *config;
+    // read global config
+    char global_config_address[MAX_ADDRESS_LENGHT];
+    strcpy(global_config_address, NEOGIT_GLOBAL_ADDRESS);
+    strcat(global_config_address, "config");
+
+    config = fopen(global_config_address, "r");
+    fgets(line_in_config, sizeof(line_in_config), config);
+    sscanf(line_in_config, "username : %s", username);
+    fgets(line_in_config, sizeof(line_in_config), config);
+    sscanf(line_in_config, "useremail : %s", useremail);
+
+    if (strcmp(username, "nothing") != 0 && strcmp(useremail, "nothing") != 0)
+    {
+        return 1;
+    }
+
+    // read config
+    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    if (find_neogit_dir(neogit_dir_address) != 1)
+    {
+        printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+        return 0;
+    }
+
+    char config_address[MAX_ADDRESS_LENGHT];
+    strcpy(config_address, neogit_dir_address);
+    strcat(config_address, "config");
+
+    if ((config = fopen(config_address, "r")) == NULL)
+    {
+        return 0;
+    }
+
+    fgets(line_in_config, sizeof(line_in_config), config);
+    if (!strcmp(username, "nothing"))
+    {
+        sscanf(line_in_config, "username : %s", username);
+    }
+    fgets(line_in_config, sizeof(line_in_config), config);
+    if (!strcmp(useremail, "nothing"))
+    {
+        sscanf(line_in_config, "useremail : %s", useremail);
+    }
+
+    if (strcmp(username, "nothing") != 0 && strcmp(useremail, "nothing") != 0)
+    {
+        return 1;
+    }
     return 0;
 }

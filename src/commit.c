@@ -23,7 +23,6 @@ int run_commit(int argc, char *argv[])
     if (!strcmp(argv[2], "-s"))
     {
         char neogit_dir_address[MAX_ADDRESS_LENGHT];
-
         if (find_neogit_dir(neogit_dir_address) != 1)
         {
             printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -55,8 +54,15 @@ int creat_commit(char message[])
     DIR *dir;
     char command[MAX_BASH_COMMAND];
 
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char username[MAX_USERNAME_LENGHT];
+    char useremail[MAX_USEREMAIL_LENGTH];
+    if (!read_user_config(username, useremail))
+    {
+        printf("first set username and useremail with neogit config user.mame or user.email\n");
+        return 0;
+    }
 
+    char neogit_dir_address[MAX_ADDRESS_LENGHT];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -208,7 +214,6 @@ int run_set_message(int argc, char *argv[])
     }
 
     char neogit_dir_address[MAX_ADDRESS_LENGHT];
-
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -227,7 +232,6 @@ int run_set_message(int argc, char *argv[])
 int run_replace_message(int argc, char *argv[])
 {
     char neogit_dir_address[MAX_ADDRESS_LENGHT];
-
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -253,7 +257,6 @@ int run_remove_message(int argc, char *argv[])
     }
 
     char neogit_dir_address[MAX_ADDRESS_LENGHT];
-
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");

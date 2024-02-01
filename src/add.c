@@ -75,7 +75,6 @@ int add_to_stage(char file_name[])
             strcat(file_address, file_name);
 
             char neogit_dir_address[MAX_ADDRESS_LENGHT];
-
             if (find_neogit_dir(neogit_dir_address) != 1)
             {
                 printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -141,7 +140,6 @@ int add_to_stage(char file_name[])
 int add_redo()
 {
     char neogit_dir_address[MAX_ADDRESS_LENGHT];
-
     if (find_neogit_dir(neogit_dir_address) == 1)
     {
         char all_stage_address[MAX_ADDRESS_LENGHT];
@@ -210,7 +208,6 @@ int add_n(int depth, int number_of_tab)
         strcat(file_address, entry->d_name);
 
         char neogit_dir_address[MAX_ADDRESS_LENGHT];
-
         if (find_neogit_dir(neogit_dir_address) != 1)
         {
             printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");

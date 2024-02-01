@@ -5,7 +5,6 @@
 int run_branch(int argc, char *argv[])
 {
     char neogit_dir_address[MAX_ADDRESS_LENGHT];
-
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
