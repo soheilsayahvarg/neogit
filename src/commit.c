@@ -67,7 +67,6 @@ int creat_commit(char message[])
     {
         return 0;
     }
-    printf("username : %s and useremail : %s and branch_name : %s\n", username, useremail, branch_name);
 
     char neogit_dir_address[MAX_ADDRESS_LENGHT];
     if (find_neogit_dir(neogit_dir_address) != 1)
@@ -75,6 +74,7 @@ int creat_commit(char message[])
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
         return 0;
     }
+
     // delete all_stage
     char all_stage_address[MAX_ADDRESS_LENGHT];
     strcpy(all_stage_address, neogit_dir_address);
@@ -202,6 +202,20 @@ int creat_commit(char message[])
         system(command);
         system(command_delete);
     }
+
+    // make commit datas file
+    char new_commit_data_address[MAX_ADDRESS_LENGHT];
+    strcpy(new_commit_data_address, neogit_dir_address);
+    strcat(new_commit_data_address, "commits_data/commit ");
+    strcat(new_commit_data_address, last_commit_id_string);
+    new_commit_data_address[strlen(new_commit_data_address) - 1] = '\0';
+
+    printf("new commit data address : %s\n", new_commit_data_address);
+    FILE *commit_data_file = fopen(new_commit_data_address, "w");
+    fprintf(commit_data_file, "username : %s, useremail : %s\n", username, useremail);
+    fprintf(commit_data_file, "branch : %s\n", branch_name);
+    fprintf(commit_data_file, "message : %s\n", message);
+    fclose(commit_data_file);
 
     printf("commit files\n");
     return 1;
