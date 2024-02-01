@@ -18,3 +18,18 @@ int run_commit(int argc, char *argv[])
     }
     return 1;
 }
+
+int run_set_message(int argc, char *argv[])
+{
+    return 1;
+}
+
+int run_replace_message(int argc, char *argv[])
+{
+    return 1;
+}
+
+int run_remove_message(int argc, char *argv[])
+{
+    return 1;
+}

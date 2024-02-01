@@ -24,54 +24,69 @@ int main(int argc, char *argv[])
     {
         return about_neogit();
     }
+    // config
     if (!strcmp(argv[1], "config"))
     {
         return run_config(argc, argv);
     }
-
+    // init
     if (!strcmp(argv[1], "init"))
     {
         return run_init(argc, argv);
     }
-
+    // add
     if (!strcmp(argv[1], "add"))
     {
         return run_add(argc, argv);
     }
-
+    // reset
     if (!strcmp(argv[1], "reset"))
     {
         return run_reset(argc, argv);
     }
-
+    // status
     if (!strcmp(argv[1], "status"))
     {
         return 1;
     }
-
+    // commit
     if (!strcmp(argv[1], "commit"))
     {
         return run_commit(argc, argv);
     }
+    if (!strcmp(argv[1], "set"))
+    {
+        return run_set_message(argc, argv);
+    }
+    if (!strcmp(argv[1], "replace"))
+    {
+        return run_replace_message(argc, argv);
+    }
+    if (!strcmp(argv[1], "remove"))
+    {
+        return run_remove_message(argc, argv);
+    }
+    // log
     if (!strcmp(argv[1], "log"))
     {
         return 1;
     }
-
+    // branch
     if (!strcmp(argv[1], "branch"))
     {
         return run_branch(argc, argv);
     }
+    // checkout
     if (!strcmp(argv[1], "checkout"))
     {
         return run_checkout(argc, argv);
     }
-
+    // alias
     if (argc == 2)
     {
         return read_alias(argv[1]);
     }
-
+    // invalid command
     printf("invalid command.\n");
     return 0;
 }
