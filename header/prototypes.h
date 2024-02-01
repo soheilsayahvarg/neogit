@@ -25,6 +25,7 @@ int reset_in_stage(char file_name[]);
 int reset_undo();
 
 int run_commit(int argc, char *argv[]);
+int creat_commit(char message[]);
 int run_set_message(int argc, char *argv[]);
 int run_replace_message(int argc, char *argv[]);
 int run_remove_message(int argc, char *argv[]);

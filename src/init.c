@@ -134,13 +134,32 @@ int make_neogit_dir(char neogit_dir_address[])
     }
 
     // make commits
-    char commits_address[MAX_ADDRESS_LENGHT];
-    strcpy(commits_address, neogit_dir_address);
-    strcat(commits_address, "commits/");
-    if (mkdir(commits_address, 0755) != 0)
+    char commits_files_address[MAX_ADDRESS_LENGHT];
+    strcpy(commits_files_address, neogit_dir_address);
+    strcat(commits_files_address, "commits_files/");
+    if (mkdir(commits_files_address, 0755) != 0)
     {
         return 0;
     }
+    char commits_data_address[MAX_ADDRESS_LENGHT];
+    strcpy(commits_data_address, neogit_dir_address);
+    strcat(commits_data_address, "commits_data/");
+    if (mkdir(commits_data_address, 0755) != 0)
+    {
+        return 0;
+    }
+    char commits_shortcuts_address[MAX_ADDRESS_LENGHT];
+    strcpy(commits_shortcuts_address, neogit_dir_address);
+    strcat(commits_shortcuts_address, "commits_shortcuts/");
+    if (mkdir(commits_shortcuts_address, 0755) != 0)
+    {
+        return 0;
+    }
+    char last_commit_id_address[MAX_ADDRESS_LENGHT];
+    strcpy(last_commit_id_address, neogit_dir_address);
+    strcat(last_commit_id_address, "last_commit_id");
+    FILE *last_commit_id_file = fopen(last_commit_id_address, "w");
+    fprintf(last_commit_id_file, "last commit id : %d\n", 0);
 
     // make alias
     char alias_address[MAX_ADDRESS_LENGHT];
