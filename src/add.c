@@ -174,17 +174,15 @@ int add_redo()
 
 int add_n(int depth)
 {
-    char cwd[MAX_ADDRESS_LENGHT];
-    if (getcwd(cwd, MAX_ADDRESS_LENGHT) == NULL)
+    char first_cwd[MAX_ADDRESS_LENGHT];
+    if (getcwd(first_cwd, MAX_ADDRESS_LENGHT) == NULL)
     {
         printf("error getcwd\n");
         return 0;
     }
+    chdir(first_cwd);
 
-    char first_cwd[MAX_ADDRESS_LENGHT];
-    strcpy(first_cwd, cwd);
-
-    if (depth == 0)
+    if (depth <= 0)
     {
         printf("invalid input\n");
         chdir(first_cwd);
@@ -194,7 +192,7 @@ int add_n(int depth)
     if (depth == 1)
     {
         struct dirent *entry;
-        DIR *dir = opendir(".");
+        DIR *dir = opendir(first_cwd);
         if (dir == NULL)
         {
             printf("error opening current directory\n");
@@ -204,6 +202,8 @@ int add_n(int depth)
 
         while ((entry = readdir(dir)) != NULL)
         {
+            printf("name : %s\n", entry->d_name);
+
             char file_address[MAX_ADDRESS_LENGHT];
             getcwd(file_address, sizeof(file_address));
             strcat(file_address, "/");
