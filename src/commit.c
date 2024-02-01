@@ -47,7 +47,7 @@ int run_commit(int argc, char *argv[])
     printf("invalid input\n");
     return 0;
 }
-// TODO
+
 int creat_commit(char message[])
 {
     struct dirent *entry;
@@ -210,7 +210,6 @@ int creat_commit(char message[])
     strcat(new_commit_data_address, last_commit_id_string);
     new_commit_data_address[strlen(new_commit_data_address) - 1] = '\0';
 
-    printf("new commit data address : %s\n", new_commit_data_address);
     FILE *commit_data_file = fopen(new_commit_data_address, "w");
     fprintf(commit_data_file, "username : %s, useremail : %s\n", username, useremail);
     fprintf(commit_data_file, "branch : %s\n", branch_name);
