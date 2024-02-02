@@ -78,6 +78,7 @@ int run_checkout(int argc, char *argv[])
                 strcat(branch_address, "branch");
                 FILE *branch_file = fopen(branch_address, "w");
                 fprintf(branch_file, "%s\n", argv[2]);
+                printf("checkout to branch %s\n", argv[2]);
                 return 1;
             }
             return 0;
@@ -90,6 +91,85 @@ int run_checkout(int argc, char *argv[])
 
 int checkout_to_commit(int commit_number)
 {
+    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    if (find_neogit_dir(neogit_dir_address) != 1)
+    {
+        printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+        return 0;
+    }
+    // check stage
+    char all_stage_address[MAX_ADDRESS_LENGHT];
+    strcpy(all_stage_address, neogit_dir_address);
+    strcat(all_stage_address, "all_stage");
+    FILE *all_stage_file;
+    if ((all_stage_file = fopen(all_stage_address, "r")) != NULL)
+    {
+        printf("stage isn't empty\nfirst commit and then use checkout\n");
+        return 0;
+    }
+    // TODO
+    // check untrack files
 
+    // delete all files in repository
+    char repository_address[MAX_ADDRESS_LENGHT];
+    strcpy(repository_address, neogit_dir_address);
+    repository_address[strlen(repository_address) - strlen(".neogit/")] = '\0';
+
+    DIR *dir;
+    struct dirent *entry;
+    char command[MAX_BASH_COMMAND];
+
+    dir = opendir(repository_address);
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (strcmp(entry->d_name, ".neogit") == 0 || strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+        {
+            continue;
+        }
+        if (entry->d_type == 4)
+        {
+            strcpy(command, "rm -rf \"");
+        }
+        else
+        {
+            strcpy(command, "rm -f \"");
+        }
+        strcat(command, repository_address);
+        strcat(command, entry->d_name);
+        strcat(command, "\"");
+        system(command);
+    }
+
+    // copy files from commit
+    char commit_files_address[MAX_ADDRESS_LENGHT];
+    strcpy(commit_files_address, neogit_dir_address);
+    strcat(commit_files_address, "commits_files/commit ");
+    char commit_id_string[MAX_NUMBERS_DIGITS];
+    sprintf(commit_id_string, "%d/", commit_number);
+    strcat(commit_files_address, commit_id_string);
+    dir = opendir(commit_files_address);
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+        {
+            continue;
+        }
+        if (entry->d_type == 4)
+        {
+            strcpy(command, "cp -r \"");
+        }
+        else
+        {
+            strcpy(command, "cp \"");
+        }
+        strcat(command, commit_files_address);
+        strcat(command, entry->d_name);
+        strcat(command, "\" \"");
+        strcat(command, repository_address);
+        strcat(command, "\"");
+        system(command);
+    }
+
+    printf("checkout to commit %d\n", commit_number);
     return 1;
 }
