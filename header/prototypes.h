@@ -56,6 +56,9 @@ int read_branch(char branch_name[]);
 int run_checkout(int argc, char *argv[]);
 int checkout_to_commit(int commit_number);
 
+// tag
+int run_tag(int argc, char *argv[]);
+
 // alias
 int creat_alias(char alias_address[], char input1[], char input2[]);
 int read_alias(char command[]);

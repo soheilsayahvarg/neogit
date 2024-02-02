@@ -91,6 +91,11 @@ int main(int argc, char *argv[])
         return run_checkout(argc, argv);
     }
 
+    if (!strcmp(argv[1], "tag"))
+    {
+        return run_tag(argc, argv);
+    }
+
     // alias
     if (argc == 2)
     {

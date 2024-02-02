@@ -174,6 +174,15 @@ int make_neogit_dir(char neogit_dir_address[])
     FILE *last_commit_id_file = fopen(last_commit_id_address, "w");
     fprintf(last_commit_id_file, "%d\n", 0);
 
+    // make stage
+    char tags_address[MAX_ADDRESS_LENGHT];
+    strcpy(tags_address, neogit_dir_address);
+    strcat(tags_address, "tags/");
+    if (mkdir(tags_address, 0755) != 0)
+    {
+        return 0;
+    }
+
     // make alias
     char alias_address[MAX_ADDRESS_LENGHT];
     strcpy(alias_address, neogit_dir_address);
