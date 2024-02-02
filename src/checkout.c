@@ -69,9 +69,7 @@ int run_checkout(int argc, char *argv[])
         char line_in_commit_data[MAX_LINE_IN_FILES_LENGTH];
         fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
         fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
-        char branch_name[MAX_BRANCH_NAME_LENGHT];
-        sscanf(line_in_commit_data, "branch : %s", branch_name);
-        if (!strcmp(branch_name, argv[2]))
+        if (strstr(line_in_commit_data, argv[2]) != NULL)
         {
             return checkout_to_commit(i);
         }
