@@ -7,6 +7,9 @@ int about_neogit();
 
 int find_neogit_dir(char cwd[]);
 
+// time
+int comprator_time(char date1_string[], char date2_string[]);
+
 // config
 int run_config(int argc, char *argv[]);
 int creat_config(char config_address[], char new_config_address[], char input1[], char input2[]);

@@ -10,5 +10,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <time.h>
+#include <locale.h>
 
 #endif

@@ -106,13 +106,39 @@ int run_log(int argc, char *argv[])
         return 1;
     }
 
-    if (argc == 4 && strcmp(argv[2], "-since") == 0)
+    if (argc == 4 && ((strcmp(argv[2], "-since") == 0) || (strcmp(argv[2], "-before") == 0)))
     {
-        return 1;
-    }
+        for (int i = last_commit_id; i > 0; i--)
+        {
+            FILE *commit_data_file;
+            char commit_data_address[MAX_ADDRESS_LENGHT];
+            strcpy(commit_data_address, neogit_dir_address);
+            strcat(commit_data_address, "commits_data/commit ");
+            char string_number_of_commit[MAX_NUMBERS_DIGITS];
+            sprintf(string_number_of_commit, "%d", i);
+            strcat(commit_data_address, string_number_of_commit);
+            if ((commit_data_file = fopen(commit_data_address, "r")) == NULL)
+            {
+                printf("not found commit data\n");
+                continue;
+            }
+            char line_in_commit_data[MAX_LINE_IN_FILES_LENGTH];
+            fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+            fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+            fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+            fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
 
-    if (argc == 4 && strcmp(argv[2], "-before") == 0)
-    {
+            if (line_in_commit_data[strlen(line_in_commit_data) - 1] == '\n')
+            {
+                line_in_commit_data[strlen(line_in_commit_data) - 1] = '\0';
+            }
+
+            memmove(line_in_commit_data, line_in_commit_data + strlen("date : "), strlen(line_in_commit_data) - strlen("date : ") + 1);
+            if ((strcmp(argv[2], "-before") == 0) ^ (comprator_time(line_in_commit_data, argv[3]) == 1))
+            {
+                show_commit_data(i);
+            }
+        }
         return 1;
     }
 
