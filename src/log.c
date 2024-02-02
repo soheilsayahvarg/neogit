@@ -75,6 +75,36 @@ int run_log(int argc, char *argv[])
 
     if (argc == 4 && strcmp(argv[2], "-author") == 0)
     {
+        int author_does_exits = 0;
+        for (int i = last_commit_id; i > 0; i--)
+        {
+            FILE *commit_data_file;
+            char commit_data_address[MAX_ADDRESS_LENGHT];
+            strcpy(commit_data_address, neogit_dir_address);
+            strcat(commit_data_address, "commits_data/commit ");
+            char string_number_of_commit[MAX_NUMBERS_DIGITS];
+            sprintf(string_number_of_commit, "%d", i);
+            strcat(commit_data_address, string_number_of_commit);
+            if ((commit_data_file = fopen(commit_data_address, "r")) == NULL)
+            {
+                printf("not found commit data\n");
+                continue;
+            }
+            char line_in_commit_data[MAX_LINE_IN_FILES_LENGTH];
+            fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+            char author_name[MAX_BRANCH_NAME_LENGHT];
+            sscanf(line_in_commit_data, "username : %s", author_name);
+            author_name[strlen(author_name) - 1] = '\0';
+            if (!strcmp(author_name, argv[3]))
+            {
+                author_does_exits = 1;
+                show_commit_data(i);
+            }
+        }
+        if (!author_does_exits)
+        {
+            printf("author does not exist\n");
+        }
         return 1;
     }
 
