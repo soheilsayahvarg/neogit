@@ -21,6 +21,7 @@
 
 #define MAX_TAG_NAME_LENGHT 100
 #define MAX_TAG_MESSAGE_LENGHT 100
+#define MAX_NUMBER_OF_TAGS 20
 
 #define NEOGIT_GLOBAL_ADDRESS "/home/soheil/Drive_D/Soheil/Study/University/CE/FOP/Project/neogit/.neogit-global/"
 

@@ -58,6 +58,7 @@ int checkout_to_commit(int commit_number);
 
 // tag
 int run_tag(int argc, char *argv[]);
+int show_all_tag();
 
 // alias
 int creat_alias(char alias_address[], char input1[], char input2[]);
