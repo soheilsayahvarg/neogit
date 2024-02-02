@@ -35,7 +35,66 @@ int run_log(int argc, char *argv[])
         {
             show_commit_data(i);
         }
+        return 1;
     }
+
+    if (argc == 4 && strcmp(argv[2], "-branch") == 0)
+    {
+        int branch_does_exits = 0;
+        for (int i = last_commit_id; i > 0; i--)
+        {
+            FILE *commit_data_file;
+            char commit_data_address[MAX_ADDRESS_LENGHT];
+            strcpy(commit_data_address, neogit_dir_address);
+            strcat(commit_data_address, "commits_data/commit ");
+            char string_number_of_commit[MAX_NUMBERS_DIGITS];
+            sprintf(string_number_of_commit, "%d", i);
+            strcat(commit_data_address, string_number_of_commit);
+            if ((commit_data_file = fopen(commit_data_address, "r")) == NULL)
+            {
+                printf("not found commit data\n");
+                continue;
+            }
+            char line_in_commit_data[MAX_LINE_IN_FILES_LENGTH];
+            fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+            fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+            char branch_name[MAX_BRANCH_NAME_LENGHT];
+            sscanf(line_in_commit_data, "branch : %s", branch_name);
+            if (!strcmp(branch_name, argv[3]))
+            {
+                branch_does_exits = 1;
+                show_commit_data(i);
+            }
+        }
+        if (!branch_does_exits)
+        {
+            printf("branch name does not exist\n");
+        }
+        return 1;
+    }
+
+    if (argc == 4 && strcmp(argv[2], "-author") == 0)
+    {
+        return 1;
+    }
+
+    if (argc == 4 && strcmp(argv[2], "-since") == 0)
+    {
+        return 1;
+    }
+
+    if (argc == 4 && strcmp(argv[2], "-before") == 0)
+    {
+        return 1;
+    }
+
+    if (argc >= 4 && strcmp(argv[2], "-search") == 0)
+    {
+        return 1;
+    }
+
+    printf("invliad input\n");
+    return 0;
 }
 
 int show_commit_data(int number_of_commit)
