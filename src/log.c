@@ -120,6 +120,34 @@ int run_log(int argc, char *argv[])
 
     if (argc >= 4 && strcmp(argv[2], "-search") == 0)
     {
+        for (int i = last_commit_id; i > 0; i--)
+        {
+            FILE *commit_data_file;
+            char commit_data_address[MAX_ADDRESS_LENGHT];
+            strcpy(commit_data_address, neogit_dir_address);
+            strcat(commit_data_address, "commits_data/commit ");
+            char string_number_of_commit[MAX_NUMBERS_DIGITS];
+            sprintf(string_number_of_commit, "%d", i);
+            strcat(commit_data_address, string_number_of_commit);
+            if ((commit_data_file = fopen(commit_data_address, "r")) == NULL)
+            {
+                printf("not found commit data\n");
+                continue;
+            }
+            char line_in_commit_data[MAX_LINE_IN_FILES_LENGTH];
+            fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+            fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+            fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+
+            for (int j = 3; j < argc; j++)
+            {
+                if (strstr(line_in_commit_data, argv[j]) != NULL)
+                {
+                    show_commit_data(i);
+                    break;
+                }
+            }
+        }
         return 1;
     }
 
