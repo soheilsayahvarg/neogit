@@ -38,92 +38,135 @@ int run_status(int argc, char *argv[])
 
 int check_status(char repository_address[], char stage_address[], char commit_address[])
 {
-    DIR *repository_dir = opendir(repository_address);
+    DIR *repository_dir;
+    DIR *stage_dir;
+    DIR *commit_dir;
     struct dirent *entry;
 
     char file_repository_address[MAX_ADDRESS_LENGHT], file_stage_address[MAX_ADDRESS_LENGHT], file_commit_address[MAX_ADDRESS_LENGHT];
 
-    while ((entry = readdir(repository_dir)) != NULL)
+    if ((repository_dir = opendir(repository_address)) != NULL)
     {
-        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0 || strcmp(entry->d_name, ".neogit") == 0)
+        while ((entry = readdir(repository_dir)) != NULL)
         {
-            continue;
-        }
-
-        strcpy(file_repository_address, repository_address);
-        strcat(file_repository_address, entry->d_name);
-        strcpy(file_stage_address, stage_address);
-        strcat(file_stage_address, entry->d_name);
-        strcpy(file_commit_address, commit_address);
-        strcat(file_commit_address, entry->d_name);
-
-        if (entry->d_type == 4)
-        {
-            strcat(file_repository_address, "/");
-            strcat(file_stage_address, "/");
-            strcat(file_commit_address, "/");
-            check_status(file_repository_address, file_stage_address, file_commit_address);
-        }
-        else
-        {
-            int compare_repository_and_stage = compare_file(file_repository_address, file_stage_address);
-            if (compare_repository_and_stage == 0)
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0 || strcmp(entry->d_name, ".neogit") == 0)
             {
-                printf("%s +\n", entry->d_name);
-                continue;
-            }
-            if (compare_repository_and_stage == 1)
-            {
-                printf("%s +M\n", entry->d_name);
-                continue;
-            }
-            int compare_repository_and_commit = compare_file(file_repository_address, file_commit_address);
-            if (compare_repository_and_commit == 0)
-            {
-                printf("%s -\n", entry->d_name);
-                continue;
-            }
-            if (compare_repository_and_commit == 1)
-            {
-                printf("%s -M\n", entry->d_name);
                 continue;
             }
 
-            printf("%s -A\n", entry->d_name);
-            continue;
+            strcpy(file_repository_address, repository_address);
+            strcat(file_repository_address, entry->d_name);
+            strcpy(file_stage_address, stage_address);
+            strcat(file_stage_address, entry->d_name);
+            strcpy(file_commit_address, commit_address);
+            strcat(file_commit_address, entry->d_name);
+
+            if (entry->d_type == 4)
+            {
+                strcat(file_repository_address, "/");
+                strcat(file_stage_address, "/");
+                strcat(file_commit_address, "/");
+                check_status(file_repository_address, file_stage_address, file_commit_address);
+            }
+            else
+            {
+                int compare_repository_and_stage = compare_file(file_repository_address, file_stage_address);
+                if (compare_repository_and_stage == 0)
+                {
+                    printf("%s +\n", entry->d_name);
+                    continue;
+                }
+                if (compare_repository_and_stage == 1)
+                {
+                    printf("%s +M\n", entry->d_name);
+                    continue;
+                }
+                int compare_repository_and_commit = compare_file(file_repository_address, file_commit_address);
+                if (compare_repository_and_commit == 0)
+                {
+                    printf("%s -\n", entry->d_name);
+                    continue;
+                }
+                if (compare_repository_and_commit == 1)
+                {
+                    printf("%s -M\n", entry->d_name);
+                    continue;
+                }
+
+                printf("%s -A\n", entry->d_name);
+                continue;
+            }
         }
     }
 
-    // while ((entry = readdir(stage_dir)) != NULL)
-    // {
-    //     if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0 || strcmp(entry->d_name, ".neogit") == 0)
-    //     {
-    //         continue;
-    //     }
+    if ((stage_dir = opendir(stage_address)) != NULL)
+    {
+        while ((entry = readdir(stage_dir)) != NULL)
+        {
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0 || strcmp(entry->d_name, ".neogit") == 0)
+            {
+                continue;
+            }
 
-    //     strcpy(file_repository_address, repository_address);
-    //     strcat(file_repository_address, entry->d_name);
-    //     strcpy(file_stage_address, stage_address);
-    //     strcat(file_stage_address, entry->d_name);
-    //     strcpy(file_commit_address, commit_address);
-    //     strcat(file_commit_address, entry->d_name);
+            strcpy(file_repository_address, repository_address);
+            strcat(file_repository_address, entry->d_name);
+            strcpy(file_stage_address, stage_address);
+            strcat(file_stage_address, entry->d_name);
+            strcpy(file_commit_address, commit_address);
+            strcat(file_commit_address, entry->d_name);
 
-    //     if (entry->d_type == 4)
-    //     {
-    //         strcat(file_repository_address, "/");
-    //         strcat(file_stage_address, "/");
-    //         strcat(file_commit_address, "/");
-    //         check_status(file_repository_address, file_stage_address, file_commit_address);
-    //     }
-    //     else
-    //     {
-    //         int compare_repository_and_stage = compare_file(file_repository_address, file_stage_address);
-    //         if (compare_repository_and_stage == -1)
-    //         {
-    //             printf("%s +D\n", entry->d_name);
-    //         }
-    //     }
-    // }
+            if (entry->d_type == 4)
+            {
+                strcat(file_repository_address, "/");
+                strcat(file_stage_address, "/");
+                strcat(file_commit_address, "/");
+                check_status(file_repository_address, file_stage_address, file_commit_address);
+            }
+            else
+            {
+                int compare_repository_and_stage = compare_file(file_repository_address, file_stage_address);
+                if (compare_repository_and_stage == -1)
+                {
+                    printf("%s +D\n", entry->d_name);
+                }
+            }
+        }
+    }
+    if ((commit_dir = opendir(commit_address)) != NULL)
+    {
+        while ((entry = readdir(commit_dir)) != NULL)
+        {
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0 || strcmp(entry->d_name, ".neogit") == 0)
+            {
+                continue;
+            }
+
+            strcpy(file_repository_address, repository_address);
+            strcat(file_repository_address, entry->d_name);
+            strcpy(file_stage_address, stage_address);
+            strcat(file_stage_address, entry->d_name);
+            strcpy(file_commit_address, commit_address);
+            strcat(file_commit_address, entry->d_name);
+
+            if (entry->d_type == 4)
+            {
+                strcat(file_repository_address, "/");
+                strcat(file_stage_address, "/");
+                strcat(file_commit_address, "/");
+                check_status(file_repository_address, file_stage_address, file_commit_address);
+            }
+
+            else
+            {
+                int compare_repository_and_commit = compare_file(file_repository_address, file_commit_address);
+                if (compare_repository_and_commit == -1)
+                {
+                    printf("%s -D\n", entry->d_name);
+                }
+            }
+        }
+    }
+    return 1;
 }
 
 int compare_file(char file_path_1[], char file_path_2[])
