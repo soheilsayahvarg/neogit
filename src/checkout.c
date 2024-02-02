@@ -71,7 +71,16 @@ int run_checkout(int argc, char *argv[])
         fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
         if (strstr(line_in_commit_data, argv[2]) != NULL)
         {
-            return checkout_to_commit(i);
+            if (checkout_to_commit(i) == 1)
+            {
+                char branch_address[MAX_ADDRESS_LENGHT];
+                strcpy(branch_address, neogit_dir_address);
+                strcat(branch_address, "branch");
+                FILE *branch_file = fopen(branch_address, "w");
+                fprintf(branch_file, "%s\n", argv[2]);
+                return 1;
+            }
+            return 0;
         }
     }
 
@@ -81,6 +90,6 @@ int run_checkout(int argc, char *argv[])
 
 int checkout_to_commit(int commit_number)
 {
-    printf("commit number : %d\n", commit_number);
+
     return 1;
 }

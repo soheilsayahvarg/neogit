@@ -32,7 +32,7 @@ int run_branch(int argc, char *argv[])
 
         char line_in_branch[MAX_BRANCH_NAME_LENGHT];
         fgets(line_in_branch, sizeof(line_in_branch), branch_file);
-        printf("your branch is %s\n", line_in_branch);
+        printf("your branch is %s", line_in_branch);
         printf("all branches:\n");
         while (fgets(line_in_branch, sizeof(line_in_branch), branches_file))
         {
@@ -89,6 +89,11 @@ int add_branch(char branch_name[], char neogit_dir_address[])
     strcat(last_commit_id_address, "last_commit_id");
     FILE *last_commit_id_file = fopen(last_commit_id_address, "r");
     fscanf(last_commit_id_file, "%d", &last_commit_id);
+    if (last_commit_id == 0)
+    {
+        printf("create \"%s\" branch\n", branch_name);
+        return 1;
+    }
     char last_commit_id_string[MAX_NUMBERS_DIGITS];
     sprintf(last_commit_id_string, "%d", last_commit_id);
 

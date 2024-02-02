@@ -118,9 +118,9 @@ int make_neogit_dir(char neogit_dir_address[])
     strcat(branches_address, "branches");
 
     branch = fopen(branch_address, "w");
-    fputs("master", branch);
+    fputs("master\n", branch);
     branches = fopen(branches_address, "w");
-    fputs("master", branches);
+    fputs("master\n", branches);
     fclose(branch);
     fclose(branches);
 
