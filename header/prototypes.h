@@ -24,6 +24,7 @@ int run_add(int argc, char *argv[]);
 int add_to_stage(char file_name[]);
 int add_redo();
 int add_n(int depth, int number_of_tab);
+int save_add_command(int argc, char *argv[]);
 
 // reset
 int run_reset(int argc, char *argv[]);

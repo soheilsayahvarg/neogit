@@ -132,6 +132,19 @@ int make_neogit_dir(char neogit_dir_address[])
     {
         return 0;
     }
+    // make add command for reset undo
+    char add_address[MAX_ADDRESS_LENGHT];
+    strcpy(add_address, neogit_dir_address);
+    strcat(add_address, "add/");
+    if (mkdir(add_address, 0755) != 0)
+    {
+        return 0;
+    }
+    char last_add_address[MAX_ADDRESS_LENGHT];
+    strcpy(last_add_address, neogit_dir_address);
+    strcat(last_add_address, "last_add");
+    FILE *last_add_file = fopen(last_add_address, "w");
+    fprintf(last_add_file, "%d\n", 0);
 
     // make commits
     char commits_files_address[MAX_ADDRESS_LENGHT];

@@ -18,7 +18,8 @@ int run_add(int argc, char *argv[])
             printf("invalid input\n");
             return 0;
         }
-
+        // TODO
+        // reset undo
         return add_redo();
     }
 
@@ -27,7 +28,10 @@ int run_add(int argc, char *argv[])
 
         for (int i = 3; i < argc; i++)
         {
-            add_to_stage(argv[i]);
+            if (add_to_stage(argv[i]))
+            {
+                save_add_command(argc, argv);
+            }
         }
         return 1;
     }
@@ -48,7 +52,10 @@ int run_add(int argc, char *argv[])
 
     for (int i = 2; i < argc; i++)
     {
-        add_to_stage(argv[i]);
+        if (add_to_stage(argv[i]))
+        {
+            save_add_command(argc, argv);
+        }
     }
 
     return 1;
@@ -267,4 +274,44 @@ int add_n(int depth, int number_of_tab)
         }
         chdir(first_cwd);
     }
+}
+
+int save_add_command(int argc, char *argv[])
+{
+    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    if (find_neogit_dir(neogit_dir_address) != 1)
+    {
+        printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+        return 0;
+    }
+
+    char last_add_address[MAX_ADDRESS_LENGHT];
+    strcpy(last_add_address, neogit_dir_address);
+    strcat(last_add_address, "last_add");
+    FILE *last_add_file = fopen(last_add_address, "r");
+    int add_number = 0;
+    fscanf(last_add_file, "%d", &add_number);
+    add_number++;
+    fclose(last_add_file);
+    last_add_file = fopen(last_add_address, "w");
+    fprintf(last_add_file, "%d\n", add_number);
+
+    char add_address[MAX_ADDRESS_LENGHT];
+    strcpy(add_address, neogit_dir_address);
+    strcat(add_address, "add/add ");
+    char add_number_string[MAX_NUMBERS_DIGITS];
+    sprintf(add_number_string, "%d", add_number);
+    strcat(add_address, add_number_string);
+
+    FILE *add_file = fopen(add_address, "w");
+
+    fprintf(add_file, "neogit reset ");
+    for (int i = 2; i < argc; i++)
+    {
+        fprintf(add_file, "\"");
+        fprintf(add_file, argv[i]);
+        fprintf(add_file, "\" ");
+    }
+    fclose(add_file);
+    return 1;
 }

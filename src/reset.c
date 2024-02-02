@@ -100,8 +100,45 @@ int reset_in_stage(char file_name[])
     printf("not found \"%s\"\n", file_name);
     return 0;
 }
-// TODO
+
 int reset_undo()
 {
+    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    if (find_neogit_dir(neogit_dir_address) != 1)
+    {
+        printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+        return 0;
+    }
+
+    char last_add_address[MAX_ADDRESS_LENGHT];
+    strcpy(last_add_address, neogit_dir_address);
+    strcat(last_add_address, "last_add");
+    FILE *last_add_file = fopen(last_add_address, "r");
+    int add_number = 0;
+    fscanf(last_add_file, "%d", &add_number);
+    if (add_number <= 0)
+    {
+        printf("cannot reset undo\n");
+        return 0;
+    }
+    fclose(last_add_file);
+    last_add_file = fopen(last_add_address, "w");
+    fprintf(last_add_file, "%d\n", add_number - 1);
+
+    char add_address[MAX_ADDRESS_LENGHT];
+    strcpy(add_address, neogit_dir_address);
+    strcat(add_address, "add/add ");
+    char add_number_string[MAX_NUMBERS_DIGITS];
+    sprintf(add_number_string, "%d", add_number);
+    strcat(add_address, add_number_string);
+
+    FILE *add_file = fopen(add_address, "r");
+
+    char command[MAX_BASH_COMMAND];
+    fgets(command, sizeof(command), add_file);
+    fclose(add_file);
+    remove(add_address);
+    printf("reset undo\n");
+    system(command);
     return 1;
 }
