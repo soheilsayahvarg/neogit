@@ -77,7 +77,7 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
     {
         while ((entry = readdir(repository_dir)) != NULL)
         {
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0 || strcmp(entry->d_name, ".neogit") == 0)
+            if (entry->d_name[0] == '.')
             {
                 continue;
             }
@@ -135,7 +135,7 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
     {
         while ((entry = readdir(stage_dir)) != NULL)
         {
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0 || strcmp(entry->d_name, ".neogit") == 0)
+            if (entry->d_name[0] == '.')
             {
                 continue;
             }
@@ -169,7 +169,7 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
     {
         while ((entry = readdir(commit_dir)) != NULL)
         {
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0 || strcmp(entry->d_name, ".neogit") == 0)
+            if (entry->d_name[0] == '.')
             {
                 continue;
             }

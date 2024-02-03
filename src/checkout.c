@@ -18,7 +18,6 @@ int run_checkout(int argc, char *argv[])
         return 0;
     }
 
-    // TODO: check the last id in branch
     int last_commit_id = 0;
     char last_commit_id_address[MAX_ADDRESS_LENGHT];
     strcpy(last_commit_id_address, neogit_dir_address);
@@ -26,12 +25,37 @@ int run_checkout(int argc, char *argv[])
     FILE *last_commit_id_file = fopen(last_commit_id_address, "r");
     fscanf(last_commit_id_file, "%d", &last_commit_id);
 
+    // get last commit id in branch
+    char branch_name[MAX_BRANCH_NAME_LENGHT];
+    read_branch_name(branch_name);
+
+    int last_commit_id_in_branch = 0;
+    for (int i = last_commit_id; i > 0; i--)
+    {
+        char commit_data_address[MAX_ADDRESS_LENGHT];
+        strcpy(commit_data_address, neogit_dir_address);
+        strcat(commit_data_address, "commits_data/commit ");
+        char commit_id_string[MAX_NUMBERS_DIGITS];
+        sprintf(commit_id_string, "%d", i);
+        strcat(commit_data_address, commit_id_string);
+
+        FILE *commit_data_file = fopen(commit_data_address, "r");
+        char line_in_commit_data[MAX_LINE_IN_FILES_LENGTH];
+        fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+        fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+        if (strstr(line_in_commit_data, branch_name) != NULL)
+        {
+            last_commit_id_in_branch = i;
+            break;
+        }
+    }
+
     if (argc != 3)
     {
         printf("invalid input\n");
         return 0;
     }
-
+    // TODO: change branch name
     if (!strncmp(argv[2], "commit ", strlen("commit ")))
     {
         int commit_number = 0;
@@ -46,21 +70,48 @@ int run_checkout(int argc, char *argv[])
 
     if (!strcmp(argv[2], "HEAD"))
     {
-        return checkout_to_commit(last_commit_id);
+        return checkout_to_commit(last_commit_id_in_branch);
     }
 
     if (!strncmp(argv[2], "HEAD-", strlen("HEAD-")))
     {
         int head_number = 0;
         sscanf(argv[2], "HEAD-%d", &head_number);
-        if (head_number < 0 || head_number >= last_commit_id)
+        if (head_number < 0 || head_number >= last_commit_id_in_branch)
         {
             printf("error: invalid HEAD number\n");
             return 0;
         }
-        return checkout_to_commit(last_commit_id - head_number);
+        for (int i = last_commit_id_in_branch;; i--)
+        {
+            char commit_data_address[MAX_ADDRESS_LENGHT];
+            strcpy(commit_data_address, neogit_dir_address);
+            strcat(commit_data_address, "commits_data/commit ");
+            char commit_id_string[MAX_NUMBERS_DIGITS];
+            sprintf(commit_id_string, "%d", i);
+            strcat(commit_data_address, commit_id_string);
+
+            FILE *commit_data_file = fopen(commit_data_address, "r");
+            char line_in_commit_data[MAX_LINE_IN_FILES_LENGTH];
+            fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+            fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+            if (strstr(line_in_commit_data, branch_name) != NULL)
+            {
+                head_number--;
+            }
+            if (head_number == 0)
+            {
+                return checkout_to_commit(i);
+            }
+            if (i == 0)
+            {
+                printf("error: invalid HEAD number\n");
+                return 0;
+            }
+        }
     }
 
+    // checkout to branch
     for (int i = last_commit_id; i > 0; i--)
     {
         FILE *commit_data_file;
@@ -106,16 +157,6 @@ int checkout_to_commit(int commit_number)
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
         return 0;
     }
-    // check stage
-    char all_stage_address[MAX_ADDRESS_LENGHT];
-    strcpy(all_stage_address, neogit_dir_address);
-    strcat(all_stage_address, "all_stage");
-    FILE *all_stage_file;
-    if ((all_stage_file = fopen(all_stage_address, "r")) != NULL)
-    {
-        printf("stage isn't empty\nfirst commit and then use checkout\n");
-        return 0;
-    }
 
     // delete all files in repository
     char repository_address[MAX_ADDRESS_LENGHT];
@@ -129,7 +170,7 @@ int checkout_to_commit(int commit_number)
     dir = opendir(repository_address);
     while ((entry = readdir(dir)) != NULL)
     {
-        if (strcmp(entry->d_name, ".neogit") == 0 || strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+        if (entry->d_name[0] == '.')
         {
             continue;
         }
@@ -157,7 +198,7 @@ int checkout_to_commit(int commit_number)
     dir = opendir(commit_files_address);
     while ((entry = readdir(dir)) != NULL)
     {
-        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+        if (entry->d_name[0] == '.')
         {
             continue;
         }

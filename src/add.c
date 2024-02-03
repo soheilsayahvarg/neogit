@@ -202,7 +202,7 @@ int add_n(int depth, int number_of_tab)
 
     while ((entry = readdir(dir)) != NULL)
     {
-        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0 || strcmp(entry->d_name, ".neogit") == 0)
+        if (entry->d_name[0] == '.')
         {
             continue;
         }

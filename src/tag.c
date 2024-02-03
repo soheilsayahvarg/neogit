@@ -142,7 +142,7 @@ int show_all_tag()
     dir = opendir(tags_address);
     while ((entry = readdir(dir)) != NULL)
     {
-        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+        if (entry->d_name[0] == '.')
         {
             continue;
         }

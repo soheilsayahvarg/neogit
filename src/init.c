@@ -168,6 +168,18 @@ int make_neogit_dir(char neogit_dir_address[])
     {
         return 0;
     }
+    char commits_message_address[MAX_ADDRESS_LENGHT];
+    strcpy(commits_message_address, neogit_dir_address);
+    strcat(commits_message_address, "commits_message/");
+    if (mkdir(commits_message_address, 0755) != 0)
+    {
+        return 0;
+    }
+    char is_user_in_the_neogit_commits_message_dir[MAX_ADDRESS_LENGHT];
+    strcpy(is_user_in_the_neogit_commits_message_dir, commits_message_address);
+    strcat(is_user_in_the_neogit_commits_message_dir, "is_user_in_the_neogit_commits_message_dir");
+    FILE *is_user_in_the_neogit_commits_message_dir_file = fopen(is_user_in_the_neogit_commits_message_dir, "w");
+
     char last_commit_id_address[MAX_ADDRESS_LENGHT];
     strcpy(last_commit_id_address, neogit_dir_address);
     strcat(last_commit_id_address, "last_commit_id");

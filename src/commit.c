@@ -149,7 +149,7 @@ int creat_commit(char message[])
 
         while ((entry = readdir(dir)) != NULL)
         {
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            if (entry->d_name[0] == '.')
             {
                 continue;
             }
@@ -187,7 +187,7 @@ int creat_commit(char message[])
     char command_delete[MAX_BASH_COMMAND];
     while ((entry = readdir(dir)) != NULL)
     {
-        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+        if (entry->d_name[0] == '.')
         {
             continue;
         }
@@ -261,9 +261,15 @@ int creat_commit(char message[])
     fprintf(commit_data_file, "date : %s\n", asctime(localtime(&now)));
     fclose(commit_data_file);
 
-    // TODO: make commit message file for search it in log
+    // make message file
+    char message_address[MAX_ADDRESS_LENGHT];
+    strcpy(message_address, neogit_dir_address);
+    strcat(message_address, "commits_message/");
+    strcat(message_address, message);
+    FILE *message_file = fopen(message_address, "w");
 
     printf("commit files\n");
+
     return 1;
 }
 

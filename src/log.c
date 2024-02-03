@@ -141,9 +141,28 @@ int run_log(int argc, char *argv[])
         }
         return 1;
     }
-    // TODO: whildcard to serarch
+
     if (argc >= 4 && strcmp(argv[2], "-search") == 0)
     {
+
+        FILE *is_user_in_the_neogit_commits_message_dir_file;
+        if ((is_user_in_the_neogit_commits_message_dir_file = fopen("is_user_in_the_neogit_commits_message_dir", "r")) == NULL)
+        {
+            char commits_message_address[MAX_ADDRESS_LENGHT];
+            strcpy(commits_message_address, neogit_dir_address);
+            strcat(commits_message_address, "commits_message/");
+            chdir(commits_message_address);
+
+            char command[MAX_BASH_COMMAND];
+            strcpy(command, "neogit ");
+            for (int i = 1; i < argc; i++)
+            {
+                strcat(command, argv[i]);
+                strcat(command, " ");
+            }
+            system(command);
+            return 1;
+        }
         for (int i = last_commit_id; i > 0; i--)
         {
             FILE *commit_data_file;
