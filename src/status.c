@@ -19,7 +19,11 @@ int run_status(int argc, char *argv[])
     strcpy(stage_address, neogit_dir_address);
     strcat(stage_address, "stage/");
 
-    // TODO: check last commit in branch
+    // get last commit id in branch
+    char branch_name[MAX_BRANCH_NAME_LENGHT];
+    read_branch_name(branch_name);
+    int last_commit_id_in_branch = 0;
+
     int last_commit_id = 0;
     char last_commit_id_address[MAX_ADDRESS_LENGHT];
     strcpy(last_commit_id_address, neogit_dir_address);
@@ -27,11 +31,31 @@ int run_status(int argc, char *argv[])
     FILE *last_commit_id_file = fopen(last_commit_id_address, "r");
     fscanf(last_commit_id_file, "%d", &last_commit_id);
 
+    for (int i = last_commit_id; i > 0; i--)
+    {
+        char commit_data_address[MAX_ADDRESS_LENGHT];
+        strcpy(commit_data_address, neogit_dir_address);
+        strcat(commit_data_address, "commits_data/commit ");
+        char commit_id_string[MAX_NUMBERS_DIGITS];
+        sprintf(commit_id_string, "%d", i);
+        strcat(commit_data_address, commit_id_string);
+
+        FILE *commit_data_file = fopen(commit_data_address, "r");
+        char line_in_commit_data[MAX_LINE_IN_FILES_LENGTH];
+        fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+        fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+        if (strstr(line_in_commit_data, branch_name) != NULL)
+        {
+            last_commit_id_in_branch = i;
+            break;
+        }
+    }
+
     char commit_address[MAX_ADDRESS_LENGHT];
     strcpy(commit_address, neogit_dir_address);
     strcat(commit_address, "commits_files/commit ");
     char commit_id_string[MAX_NUMBERS_DIGITS];
-    sprintf(commit_id_string, "%d/", last_commit_id);
+    sprintf(commit_id_string, "%d/", last_commit_id_in_branch);
     strcat(commit_address, commit_id_string);
 
     return check_status(repository_address, stage_address, commit_address);

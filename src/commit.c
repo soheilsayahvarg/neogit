@@ -90,7 +90,7 @@ int creat_commit(char message[])
     strcat(command, all_stage_address);
     strcat(command, "\"");
     system(command);
-    // TODO: check last commit in branch
+
     // read last commit id
     int last_commit_id = 0;
     char last_commit_id_address[MAX_ADDRESS_LENGHT];
@@ -102,6 +102,28 @@ int creat_commit(char message[])
     fclose(last_commit_id_file);
     last_commit_id_file = fopen(last_commit_id_address, "w");
     fprintf(last_commit_id_file, "%d\n", last_commit_id);
+
+    // get last commit id in branch
+    int last_commit_id_in_branch = 0;
+    for (int i = last_commit_id - 1; i > 0; i--)
+    {
+        char commit_data_address[MAX_ADDRESS_LENGHT];
+        strcpy(commit_data_address, neogit_dir_address);
+        strcat(commit_data_address, "commits_data/commit ");
+        char commit_id_string[MAX_NUMBERS_DIGITS];
+        sprintf(commit_id_string, "%d", i);
+        strcat(commit_data_address, commit_id_string);
+
+        FILE *commit_data_file = fopen(commit_data_address, "r");
+        char line_in_commit_data[MAX_LINE_IN_FILES_LENGTH];
+        fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+        fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+        if (strstr(line_in_commit_data, branch_name) != NULL)
+        {
+            last_commit_id_in_branch = i;
+            break;
+        }
+    }
 
     // make dir new commit
     char new_commit_files_address[MAX_ADDRESS_LENGHT];
@@ -121,7 +143,7 @@ int creat_commit(char message[])
         strcpy(old_commit_files_address, neogit_dir_address);
         strcat(old_commit_files_address, "commits_files/commit ");
         char old_commit_id_string[MAX_NUMBERS_DIGITS];
-        sprintf(old_commit_id_string, "%d/", last_commit_id - 1);
+        sprintf(old_commit_id_string, "%d/", last_commit_id_in_branch);
         strcat(old_commit_files_address, old_commit_id_string);
         dir = opendir(old_commit_files_address);
 

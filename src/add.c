@@ -307,7 +307,7 @@ int save_add_command(int argc, char *argv[])
     for (int i = 2; i < argc; i++)
     {
         fprintf(add_file, "\"");
-        fprintf(add_file, argv[i]);
+        fprintf(add_file, "%s", argv[i]);
         fprintf(add_file, "\" ");
     }
     fclose(add_file);
