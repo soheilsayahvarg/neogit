@@ -101,7 +101,13 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
                 int compare_repository_and_stage = compare_file(file_repository_address, file_stage_address);
                 if (compare_repository_and_stage == 0)
                 {
-                    printf("%s +\n", entry->d_name);
+                    printf("%s +", entry->d_name);
+                    // TODO:
+                    if (strcmp(return_permission(file_repository_address), return_permission(file_stage_address)))
+                    {
+                        printf("T");
+                    }
+                    printf("\n");
                     find_untrack_filess = 1;
                     continue;
                 }
@@ -233,4 +239,13 @@ int compare_file(char file_path_1[], char file_path_2[])
     fclose(file1);
     fclose(file2);
     return 0;
+}
+
+char *return_permission(char path[])
+{
+    struct stat st;
+    stat(path, &st);
+    char output[10];
+    sprintf(output, "%X", st.st_mode);
+    return output;
 }

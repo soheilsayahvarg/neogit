@@ -35,6 +35,7 @@ int reset_undo();
 int run_status(int argc, char *argv[]);
 int check_status(char repository_address[], char stage_address[], char commit_address[]);
 int compare_file(char file_path_1[], char file_path_2[]);
+char *return_permission(char path[]);
 
 // commit
 int run_commit(int argc, char *argv[]);
