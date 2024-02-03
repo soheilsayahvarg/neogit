@@ -19,6 +19,7 @@ int run_status(int argc, char *argv[])
     strcpy(stage_address, neogit_dir_address);
     strcat(stage_address, "stage/");
 
+    // TODO: check last commit in branch
     int last_commit_id = 0;
     char last_commit_id_address[MAX_ADDRESS_LENGHT];
     strcpy(last_commit_id_address, neogit_dir_address);
@@ -36,6 +37,8 @@ int run_status(int argc, char *argv[])
     return check_status(repository_address, stage_address, commit_address);
 }
 
+// TODO: return fine untrack files
+// TODO : check file permissions
 int check_status(char repository_address[], char stage_address[], char commit_address[])
 {
     DIR *repository_dir;
@@ -84,7 +87,7 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
                 int compare_repository_and_commit = compare_file(file_repository_address, file_commit_address);
                 if (compare_repository_and_commit == 0)
                 {
-                    printf("%s -\n", entry->d_name);
+                    // printf("%s -\n", entry->d_name);
                     continue;
                 }
                 if (compare_repository_and_commit == 1)

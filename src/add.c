@@ -18,8 +18,6 @@ int run_add(int argc, char *argv[])
             printf("invalid input\n");
             return 0;
         }
-        // TODO
-        // reset undo
         return add_redo();
     }
 

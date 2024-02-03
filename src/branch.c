@@ -132,7 +132,7 @@ int add_branch(char branch_name[], char neogit_dir_address[])
     return 1;
 }
 
-int read_branch(char branch_name[])
+int read_branch_name(char branch_name[])
 {
     char neogit_dir_address[MAX_ADDRESS_LENGHT];
     if (find_neogit_dir(neogit_dir_address) != 1)

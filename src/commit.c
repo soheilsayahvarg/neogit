@@ -63,7 +63,7 @@ int creat_commit(char message[])
     }
 
     char branch_name[MAX_BRANCH_NAME_LENGHT];
-    if (!read_branch(branch_name))
+    if (!read_branch_name(branch_name))
     {
         return 0;
     }
@@ -90,7 +90,7 @@ int creat_commit(char message[])
     strcat(command, all_stage_address);
     strcat(command, "\"");
     system(command);
-
+    // TODO: check last commit in branch
     // read last commit id
     int last_commit_id = 0;
     char last_commit_id_address[MAX_ADDRESS_LENGHT];
@@ -203,6 +203,27 @@ int creat_commit(char message[])
         system(command_delete);
     }
 
+    // delete add directory files
+    char add_address[MAX_ADDRESS_LENGHT];
+    strcpy(add_address, neogit_dir_address);
+    strcat(add_address, "add/");
+    strcpy(command, "rm -rf \"");
+    strcat(command, add_address);
+    strcat(command, "\"");
+    system(command);
+    if (mkdir(add_address, 0755) != 0)
+    {
+        return 0;
+    }
+
+    // change last add
+    char last_add_address[MAX_ADDRESS_LENGHT];
+    strcpy(last_add_address, neogit_dir_address);
+    strcat(last_add_address, "last_add");
+    FILE *last_add_file = fopen(last_add_address, "w");
+    fprintf(last_add_file, "%d\n", 0);
+    fclose(last_add_file);
+
     // make commit datas file
     char new_commit_data_address[MAX_ADDRESS_LENGHT];
     strcpy(new_commit_data_address, neogit_dir_address);
@@ -217,6 +238,8 @@ int creat_commit(char message[])
     time_t now = time(NULL);
     fprintf(commit_data_file, "date : %s\n", asctime(localtime(&now)));
     fclose(commit_data_file);
+
+    // TODO: make commit message file for search it in log
 
     printf("commit files\n");
     return 1;

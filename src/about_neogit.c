@@ -4,14 +4,7 @@
 
 int about_neogit()
 {
-    printf("\nconfig\n");
-    printf("init\n");
-    printf("add\n");
-    printf("reset\n");
-    printf("ststus\n");
-    printf("commit\n");
-    printf("log\n");
-    printf("branch\n");
-    printf("checkout\n");
+    printf("neogit version beta\n");
+    printf("Author : Soheil Sayah Varg <soheilsayahvarg@gamil.com>\n");
     return 1;
 }

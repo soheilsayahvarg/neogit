@@ -37,31 +37,33 @@ int run_config(int argc, char *argv[])
             char neogit_dir_address[MAX_ADDRESS_LENGHT];
             if (find_neogit_dir(neogit_dir_address) == 1)
             {
-                char config_address[MAX_ADDRESS_LENGHT];
-                strcpy(config_address, neogit_dir_address);
-                strcat(config_address, "config");
-                char new_config_address[MAX_ADDRESS_LENGHT];
-                strcpy(new_config_address, neogit_dir_address);
-                strcat(new_config_address, "new_config");
-
-                return creat_config(config_address, new_config_address, argv[2], argv[3]);
+                printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+                return 0;
             }
-            printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
-            return 0;
+
+            char config_address[MAX_ADDRESS_LENGHT];
+            strcpy(config_address, neogit_dir_address);
+            strcat(config_address, "config");
+            char new_config_address[MAX_ADDRESS_LENGHT];
+            strcpy(new_config_address, neogit_dir_address);
+            strcat(new_config_address, "new_config");
+
+            return creat_config(config_address, new_config_address, argv[2], argv[3]);
         }
 
         if (!strncmp(argv[2], "alias.", 6))
         {
             char neogit_dir_address[MAX_ADDRESS_LENGHT];
-            if (find_neogit_dir(neogit_dir_address) == 1)
+            if (find_neogit_dir(neogit_dir_address) != 1)
             {
-                char alias_address[MAX_ADDRESS_LENGHT];
-                strcpy(alias_address, neogit_dir_address);
-                strcat(alias_address, "alias/");
-                return creat_alias(alias_address, argv[2], argv[3]);
+                printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+                return 0;
             }
-            printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
-            return 0;
+
+            char alias_address[MAX_ADDRESS_LENGHT];
+            strcpy(alias_address, neogit_dir_address);
+            strcat(alias_address, "alias/");
+            return creat_alias(alias_address, argv[2], argv[3]);
         }
 
         printf("invalid inputs.\n");
@@ -207,28 +209,28 @@ int read_alias(char command[])
 
     // check alias
     char neogit_dir_address[MAX_ADDRESS_LENGHT];
-    if (find_neogit_dir(neogit_dir_address) == 1)
+    if (find_neogit_dir(neogit_dir_address) != 1)
     {
-        char alias_address[MAX_ADDRESS_LENGHT];
-        strcpy(alias_address, neogit_dir_address);
-        strcat(alias_address, "alias/");
-        strcat(alias_address, command);
-
-        alias_file = fopen(alias_address, "r");
-        if (alias_file != NULL)
-        {
-            printf("found command in alias\n");
-
-            char string[MAX_COMMAND_LENGHT];
-            fgets(string, sizeof(string), alias_file);
-            system(string);
-            return 1;
-        }
-
-        printf("invalid command\n");
+        printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
         return 0;
     }
-    printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+
+    char alias_address[MAX_ADDRESS_LENGHT];
+    strcpy(alias_address, neogit_dir_address);
+    strcat(alias_address, "alias/");
+    strcat(alias_address, command);
+
+    alias_file = fopen(alias_address, "r");
+    if (alias_file != NULL)
+    {
+        printf("found command in alias\n");
+        char string[MAX_COMMAND_LENGHT];
+        fgets(string, sizeof(string), alias_file);
+        system(string);
+        return 1;
+    }
+
+    printf("invalid command\n");
     return 0;
 }
 

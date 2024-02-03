@@ -141,7 +141,7 @@ int run_log(int argc, char *argv[])
         }
         return 1;
     }
-
+    // TODO: whildcard to serarch
     if (argc >= 4 && strcmp(argv[2], "-search") == 0)
     {
         for (int i = last_commit_id; i > 0; i--)

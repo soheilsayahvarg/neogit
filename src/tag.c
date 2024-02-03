@@ -40,7 +40,7 @@ int run_tag(int argc, char *argv[])
         return 1;
     }
 
-    // ger username useremail
+    // get username useremail
     char username[MAX_USERNAME_LENGHT], useremail[MAX_USEREMAIL_LENGTH];
     if (read_user_config(username, useremail) != 1)
     {

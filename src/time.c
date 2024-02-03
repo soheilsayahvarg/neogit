@@ -2,8 +2,7 @@
 #include "prototypes.h"
 #include "defines.h"
 
-// Format :
-// Fri Feb  2 16:31:45 2024
+// Format : Fri Feb  2 16:31:45 2024
 int comprator_time(char date1_string[], char date2_string[])
 {
     char month1_sring[4];
