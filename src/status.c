@@ -61,10 +61,11 @@ int run_status(int argc, char *argv[])
     return check_status(repository_address, stage_address, commit_address);
 }
 
-// TODO: return fine untrack files
 // TODO : check file permissions
 int check_status(char repository_address[], char stage_address[], char commit_address[])
 {
+    static int find_untrack_filess = 0;
+
     DIR *repository_dir;
     DIR *stage_dir;
     DIR *commit_dir;
@@ -101,11 +102,13 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
                 if (compare_repository_and_stage == 0)
                 {
                     printf("%s +\n", entry->d_name);
+                    find_untrack_filess = 1;
                     continue;
                 }
                 if (compare_repository_and_stage == 1)
                 {
                     printf("%s +M\n", entry->d_name);
+                    find_untrack_filess = 1;
                     continue;
                 }
                 int compare_repository_and_commit = compare_file(file_repository_address, file_commit_address);
@@ -117,10 +120,12 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
                 if (compare_repository_and_commit == 1)
                 {
                     printf("%s -M\n", entry->d_name);
+                    find_untrack_filess = 1;
                     continue;
                 }
 
                 printf("%s -A\n", entry->d_name);
+                find_untrack_filess = 1;
                 continue;
             }
         }
@@ -155,6 +160,7 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
                 if (compare_repository_and_stage == -1)
                 {
                     printf("%s +D\n", entry->d_name);
+                    // find_untrack_filess = 1;
                 }
             }
         }
@@ -189,11 +195,12 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
                 if (compare_repository_and_commit == -1)
                 {
                     printf("%s -D\n", entry->d_name);
+                    // find_untrack_filess = 1;
                 }
             }
         }
     }
-    return 1;
+    return find_untrack_filess;
 }
 
 int compare_file(char file_path_1[], char file_path_2[])

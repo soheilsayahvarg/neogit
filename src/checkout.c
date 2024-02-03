@@ -10,7 +10,14 @@ int run_checkout(int argc, char *argv[])
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
         return 0;
     }
-    // TODO: check untrack files with status
+
+    // check untrack files with status
+    if (run_status(argc, argv) == 1)
+    {
+        printf("you cant checkout, first use commit to save changes\n");
+        return 0;
+    }
+
     // TODO: check the last id in branch
     int last_commit_id = 0;
     char last_commit_id_address[MAX_ADDRESS_LENGHT];
