@@ -54,12 +54,12 @@ int reset_in_stage(char file_name[])
         if (!strcmp(entry->d_name, file_name))
         {
             // delete file
-            char file_address[MAX_ADDRESS_LENGHT];
+            char file_address[MAX_ADDRESS_LENGTH];
             getcwd(file_address, sizeof(file_address));
             strcat(file_address, "/");
             strcat(file_address, file_name);
 
-            char neogit_dir_address[MAX_ADDRESS_LENGHT];
+            char neogit_dir_address[MAX_ADDRESS_LENGTH];
             if (find_neogit_dir(neogit_dir_address) != 1)
             {
                 printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -71,9 +71,9 @@ int reset_in_stage(char file_name[])
 
             for (int i = len; i < strlen(file_address); i++)
             {
-                int lenght = strlen(neogit_dir_address);
-                neogit_dir_address[lenght] = file_address[i];
-                neogit_dir_address[lenght + 1] = '\0';
+                int LENGTH = strlen(neogit_dir_address);
+                neogit_dir_address[LENGTH] = file_address[i];
+                neogit_dir_address[LENGTH + 1] = '\0';
             }
 
             char command[MAX_BASH_COMMAND];
@@ -103,14 +103,14 @@ int reset_in_stage(char file_name[])
 
 int reset_undo()
 {
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
         return 0;
     }
 
-    char last_add_address[MAX_ADDRESS_LENGHT];
+    char last_add_address[MAX_ADDRESS_LENGTH];
     strcpy(last_add_address, neogit_dir_address);
     strcat(last_add_address, "last_add");
     FILE *last_add_file = fopen(last_add_address, "r");
@@ -125,7 +125,7 @@ int reset_undo()
     last_add_file = fopen(last_add_address, "w");
     fprintf(last_add_file, "%d\n", add_number - 1);
 
-    char add_address[MAX_ADDRESS_LENGHT];
+    char add_address[MAX_ADDRESS_LENGTH];
     strcpy(add_address, neogit_dir_address);
     strcat(add_address, "add/add ");
     char add_number_string[MAX_NUMBERS_DIGITS];

@@ -4,7 +4,7 @@
 
 int run_log(int argc, char *argv[])
 {
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -12,7 +12,7 @@ int run_log(int argc, char *argv[])
     }
 
     int last_commit_id = 0;
-    char last_commit_id_address[MAX_ADDRESS_LENGHT];
+    char last_commit_id_address[MAX_ADDRESS_LENGTH];
     strcpy(last_commit_id_address, neogit_dir_address);
     strcat(last_commit_id_address, "last_commit_id");
     FILE *last_commit_id_file = fopen(last_commit_id_address, "r");
@@ -44,7 +44,7 @@ int run_log(int argc, char *argv[])
         for (int i = last_commit_id; i > 0; i--)
         {
             FILE *commit_data_file;
-            char commit_data_address[MAX_ADDRESS_LENGHT];
+            char commit_data_address[MAX_ADDRESS_LENGTH];
             strcpy(commit_data_address, neogit_dir_address);
             strcat(commit_data_address, "commits_data/commit ");
             char string_number_of_commit[MAX_NUMBERS_DIGITS];
@@ -77,7 +77,7 @@ int run_log(int argc, char *argv[])
         for (int i = last_commit_id; i > 0; i--)
         {
             FILE *commit_data_file;
-            char commit_data_address[MAX_ADDRESS_LENGHT];
+            char commit_data_address[MAX_ADDRESS_LENGTH];
             strcpy(commit_data_address, neogit_dir_address);
             strcat(commit_data_address, "commits_data/commit ");
             char string_number_of_commit[MAX_NUMBERS_DIGITS];
@@ -90,7 +90,7 @@ int run_log(int argc, char *argv[])
             }
             char line_in_commit_data[MAX_LINE_IN_FILES_LENGTH];
             fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
-            char author_name[MAX_BRANCH_NAME_LENGHT];
+            char author_name[MAX_BRANCH_NAME_LENGTH];
             sscanf(line_in_commit_data, "username : %s", author_name);
             author_name[strlen(author_name) - 1] = '\0';
             if (!strcmp(author_name, argv[3]))
@@ -111,7 +111,7 @@ int run_log(int argc, char *argv[])
         for (int i = last_commit_id; i > 0; i--)
         {
             FILE *commit_data_file;
-            char commit_data_address[MAX_ADDRESS_LENGHT];
+            char commit_data_address[MAX_ADDRESS_LENGTH];
             strcpy(commit_data_address, neogit_dir_address);
             strcat(commit_data_address, "commits_data/commit ");
             char string_number_of_commit[MAX_NUMBERS_DIGITS];
@@ -148,7 +148,7 @@ int run_log(int argc, char *argv[])
         FILE *is_user_in_the_neogit_commits_message_dir_file;
         if ((is_user_in_the_neogit_commits_message_dir_file = fopen("is_user_in_the_neogit_commits_message_dir", "r")) == NULL)
         {
-            char commits_message_address[MAX_ADDRESS_LENGHT];
+            char commits_message_address[MAX_ADDRESS_LENGTH];
             strcpy(commits_message_address, neogit_dir_address);
             strcat(commits_message_address, "commits_message/");
             chdir(commits_message_address);
@@ -166,7 +166,7 @@ int run_log(int argc, char *argv[])
         for (int i = last_commit_id; i > 0; i--)
         {
             FILE *commit_data_file;
-            char commit_data_address[MAX_ADDRESS_LENGHT];
+            char commit_data_address[MAX_ADDRESS_LENGTH];
             strcpy(commit_data_address, neogit_dir_address);
             strcat(commit_data_address, "commits_data/commit ");
             char string_number_of_commit[MAX_NUMBERS_DIGITS];
@@ -202,7 +202,7 @@ int show_commit_data(int number_of_commit)
 {
     FILE *commit_data_file;
 
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -210,7 +210,7 @@ int show_commit_data(int number_of_commit)
     }
 
     printf("commit %d:\n", number_of_commit);
-    char commit_data_address[MAX_ADDRESS_LENGHT];
+    char commit_data_address[MAX_ADDRESS_LENGTH];
     strcpy(commit_data_address, neogit_dir_address);
     strcat(commit_data_address, "commits_data/commit ");
     char string_number_of_commit[MAX_NUMBERS_DIGITS];

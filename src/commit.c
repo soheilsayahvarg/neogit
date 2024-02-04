@@ -12,9 +12,9 @@ int run_commit(int argc, char *argv[])
 
     if (!strcmp(argv[2], "-m"))
     {
-        if (strlen(argv[3]) > MAX_COMMIT_MESSAGE_LENGHT)
+        if (strlen(argv[3]) > MAX_COMMIT_MESSAGE_LENGTH)
         {
-            printf("max commit message is %d characters\n", MAX_COMMIT_MESSAGE_LENGHT);
+            printf("max commit message is %d characters\n", MAX_COMMIT_MESSAGE_LENGTH);
             return 0;
         }
 
@@ -22,7 +22,7 @@ int run_commit(int argc, char *argv[])
     }
     if (!strcmp(argv[2], "-s"))
     {
-        char neogit_dir_address[MAX_ADDRESS_LENGHT];
+        char neogit_dir_address[MAX_ADDRESS_LENGTH];
         if (find_neogit_dir(neogit_dir_address) != 1)
         {
             printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -33,7 +33,7 @@ int run_commit(int argc, char *argv[])
         FILE *shortcut_file = fopen(neogit_dir_address, "r");
         if (shortcut_file != NULL)
         {
-            char shortcut_message[MAX_COMMIT_MESSAGE_LENGHT + 1];
+            char shortcut_message[MAX_COMMIT_MESSAGE_LENGTH + 1];
             fgets(shortcut_message, sizeof(shortcut_message), shortcut_file);
             if (shortcut_message[strlen(shortcut_message) - 1] == '\n')
             {
@@ -54,7 +54,7 @@ int creat_commit(char message[])
     DIR *dir;
     char command[MAX_BASH_COMMAND];
 
-    char username[MAX_USERNAME_LENGHT];
+    char username[MAX_USERNAME_LENGTH];
     char useremail[MAX_USEREMAIL_LENGTH];
     if (!read_user_config(username, useremail))
     {
@@ -62,13 +62,13 @@ int creat_commit(char message[])
         return 0;
     }
 
-    char branch_name[MAX_BRANCH_NAME_LENGHT];
+    char branch_name[MAX_BRANCH_NAME_LENGTH];
     if (!read_branch_name(branch_name))
     {
         return 0;
     }
 
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -76,7 +76,7 @@ int creat_commit(char message[])
     }
 
     // delete all_stage
-    char all_stage_address[MAX_ADDRESS_LENGHT];
+    char all_stage_address[MAX_ADDRESS_LENGTH];
     strcpy(all_stage_address, neogit_dir_address);
     strcat(all_stage_address, "all_stage");
     FILE *all_stage_file;
@@ -93,7 +93,7 @@ int creat_commit(char message[])
 
     // read last commit id
     int last_commit_id = 0;
-    char last_commit_id_address[MAX_ADDRESS_LENGHT];
+    char last_commit_id_address[MAX_ADDRESS_LENGTH];
     strcpy(last_commit_id_address, neogit_dir_address);
     strcat(last_commit_id_address, "last_commit_id");
     FILE *last_commit_id_file = fopen(last_commit_id_address, "r");
@@ -107,7 +107,7 @@ int creat_commit(char message[])
     int last_commit_id_in_branch = 0;
     for (int i = last_commit_id - 1; i > 0; i--)
     {
-        char commit_data_address[MAX_ADDRESS_LENGHT];
+        char commit_data_address[MAX_ADDRESS_LENGTH];
         strcpy(commit_data_address, neogit_dir_address);
         strcat(commit_data_address, "commits_data/commit ");
         char commit_id_string[MAX_NUMBERS_DIGITS];
@@ -126,7 +126,7 @@ int creat_commit(char message[])
     }
 
     // make dir new commit
-    char new_commit_files_address[MAX_ADDRESS_LENGHT];
+    char new_commit_files_address[MAX_ADDRESS_LENGTH];
     strcpy(new_commit_files_address, neogit_dir_address);
     strcat(new_commit_files_address, "commits_files/commit ");
     char last_commit_id_string[MAX_NUMBERS_DIGITS];
@@ -134,12 +134,12 @@ int creat_commit(char message[])
     strcat(new_commit_files_address, last_commit_id_string);
     mkdir(new_commit_files_address, 0755);
 
-    char file_path_1[MAX_ADDRESS_LENGHT];
-    char file_path_2[MAX_ADDRESS_LENGHT];
+    char file_path_1[MAX_ADDRESS_LENGTH];
+    char file_path_2[MAX_ADDRESS_LENGTH];
     if (last_commit_id > 1)
     {
         // copy old commit
-        char old_commit_files_address[MAX_ADDRESS_LENGHT];
+        char old_commit_files_address[MAX_ADDRESS_LENGTH];
         strcpy(old_commit_files_address, neogit_dir_address);
         strcat(old_commit_files_address, "commits_files/commit ");
         char old_commit_id_string[MAX_NUMBERS_DIGITS];
@@ -179,7 +179,7 @@ int creat_commit(char message[])
     }
 
     // copy stage
-    char stage_files_address[MAX_ADDRESS_LENGHT];
+    char stage_files_address[MAX_ADDRESS_LENGTH];
     strcpy(stage_files_address, neogit_dir_address);
     strcat(stage_files_address, "stage/");
     dir = opendir(stage_files_address);
@@ -226,7 +226,7 @@ int creat_commit(char message[])
     }
 
     // delete add directory files
-    char add_address[MAX_ADDRESS_LENGHT];
+    char add_address[MAX_ADDRESS_LENGTH];
     strcpy(add_address, neogit_dir_address);
     strcat(add_address, "add/");
     strcpy(command, "rm -rf \"");
@@ -239,7 +239,7 @@ int creat_commit(char message[])
     }
 
     // change last add
-    char last_add_address[MAX_ADDRESS_LENGHT];
+    char last_add_address[MAX_ADDRESS_LENGTH];
     strcpy(last_add_address, neogit_dir_address);
     strcat(last_add_address, "last_add");
     FILE *last_add_file = fopen(last_add_address, "w");
@@ -247,7 +247,7 @@ int creat_commit(char message[])
     fclose(last_add_file);
 
     // make commit datas file
-    char new_commit_data_address[MAX_ADDRESS_LENGHT];
+    char new_commit_data_address[MAX_ADDRESS_LENGTH];
     strcpy(new_commit_data_address, neogit_dir_address);
     strcat(new_commit_data_address, "commits_data/commit ");
     strcat(new_commit_data_address, last_commit_id_string);
@@ -262,7 +262,7 @@ int creat_commit(char message[])
     fclose(commit_data_file);
 
     // make message file
-    char message_address[MAX_ADDRESS_LENGHT];
+    char message_address[MAX_ADDRESS_LENGTH];
     strcpy(message_address, neogit_dir_address);
     strcat(message_address, "commits_message/");
     strcat(message_address, message);
@@ -280,13 +280,13 @@ int run_set_message(int argc, char *argv[])
         printf("invalid input\n");
         return 0;
     }
-    if (strlen(argv[3]) > MAX_COMMIT_MESSAGE_LENGHT)
+    if (strlen(argv[3]) > MAX_COMMIT_MESSAGE_LENGTH)
     {
-        printf("max commit message is %d characters\n", MAX_COMMIT_MESSAGE_LENGHT);
+        printf("max commit message is %d characters\n", MAX_COMMIT_MESSAGE_LENGTH);
         return 0;
     }
 
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -304,7 +304,7 @@ int run_set_message(int argc, char *argv[])
 
 int run_replace_message(int argc, char *argv[])
 {
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -329,7 +329,7 @@ int run_remove_message(int argc, char *argv[])
         return 0;
     }
 
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");

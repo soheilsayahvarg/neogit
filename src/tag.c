@@ -6,7 +6,7 @@ int run_tag(int argc, char *argv[])
 {
     FILE *tag_file;
 
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -19,7 +19,7 @@ int run_tag(int argc, char *argv[])
         return show_all_tag();
     }
 
-    char tag_address[MAX_ADDRESS_LENGHT];
+    char tag_address[MAX_ADDRESS_LENGTH];
     strcpy(tag_address, neogit_dir_address);
     strcat(tag_address, "/tags/");
     strcat(tag_address, argv[3]);
@@ -41,7 +41,7 @@ int run_tag(int argc, char *argv[])
     }
 
     // get username useremail
-    char username[MAX_USERNAME_LENGHT], useremail[MAX_USEREMAIL_LENGTH];
+    char username[MAX_USERNAME_LENGTH], useremail[MAX_USEREMAIL_LENGTH];
     if (read_user_config(username, useremail) != 1)
     {
         printf("first set username and useremail with neogit config user.mame or user.email\n");
@@ -72,7 +72,7 @@ int run_tag(int argc, char *argv[])
     }
 
     int tag_commit_id = 0;
-    char last_commit_id_address[MAX_ADDRESS_LENGHT];
+    char last_commit_id_address[MAX_ADDRESS_LENGTH];
     strcpy(last_commit_id_address, neogit_dir_address);
     strcat(last_commit_id_address, "last_commit_id");
     FILE *last_commit_id_file = fopen(last_commit_id_address, "r");
@@ -125,17 +125,17 @@ int show_all_tag()
     DIR *dir;
     struct dirent *entry;
 
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
         return 0;
     }
 
-    char all_tags[MAX_NUMBER_OF_TAGS][MAX_TAG_NAME_LENGHT];
+    char all_tags[MAX_NUMBER_OF_TAGS][MAX_TAG_NAME_LENGTH];
     int number_of_all_tags = 0;
 
-    char tags_address[MAX_ADDRESS_LENGHT];
+    char tags_address[MAX_ADDRESS_LENGTH];
     strcpy(tags_address, neogit_dir_address);
     strcat(tags_address, "/tags/");
 
@@ -161,7 +161,7 @@ int show_all_tag()
         {
             if (strcmp(all_tags[j], all_tags[i]) < 0)
             {
-                char tmp[MAX_TAG_NAME_LENGHT];
+                char tmp[MAX_TAG_NAME_LENGTH];
                 strcpy(tmp, all_tags[i]);
                 strcpy(all_tags[i], all_tags[j]);
                 strcpy(all_tags[j], tmp);

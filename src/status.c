@@ -4,28 +4,28 @@
 
 int run_status(int argc, char *argv[])
 {
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
         return 0;
     }
 
-    char repository_address[MAX_ADDRESS_LENGHT];
+    char repository_address[MAX_ADDRESS_LENGTH];
     strcpy(repository_address, neogit_dir_address);
     repository_address[strlen(repository_address) - strlen(".neogit/")] = '\0';
 
-    char stage_address[MAX_ADDRESS_LENGHT];
+    char stage_address[MAX_ADDRESS_LENGTH];
     strcpy(stage_address, neogit_dir_address);
     strcat(stage_address, "stage/");
 
     // get last commit id in branch
-    char branch_name[MAX_BRANCH_NAME_LENGHT];
+    char branch_name[MAX_BRANCH_NAME_LENGTH];
     read_branch_name(branch_name);
     int last_commit_id_in_branch = 0;
 
     int last_commit_id = 0;
-    char last_commit_id_address[MAX_ADDRESS_LENGHT];
+    char last_commit_id_address[MAX_ADDRESS_LENGTH];
     strcpy(last_commit_id_address, neogit_dir_address);
     strcat(last_commit_id_address, "last_commit_id");
     FILE *last_commit_id_file = fopen(last_commit_id_address, "r");
@@ -33,7 +33,7 @@ int run_status(int argc, char *argv[])
 
     for (int i = last_commit_id; i > 0; i--)
     {
-        char commit_data_address[MAX_ADDRESS_LENGHT];
+        char commit_data_address[MAX_ADDRESS_LENGTH];
         strcpy(commit_data_address, neogit_dir_address);
         strcat(commit_data_address, "commits_data/commit ");
         char commit_id_string[MAX_NUMBERS_DIGITS];
@@ -51,7 +51,7 @@ int run_status(int argc, char *argv[])
         }
     }
 
-    char commit_address[MAX_ADDRESS_LENGHT];
+    char commit_address[MAX_ADDRESS_LENGTH];
     strcpy(commit_address, neogit_dir_address);
     strcat(commit_address, "commits_files/commit ");
     char commit_id_string[MAX_NUMBERS_DIGITS];
@@ -75,7 +75,7 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
     DIR *commit_dir;
     struct dirent *entry;
 
-    char file_repository_address[MAX_ADDRESS_LENGHT], file_stage_address[MAX_ADDRESS_LENGHT], file_commit_address[MAX_ADDRESS_LENGHT];
+    char file_repository_address[MAX_ADDRESS_LENGTH], file_stage_address[MAX_ADDRESS_LENGTH], file_commit_address[MAX_ADDRESS_LENGTH];
 
     if ((repository_dir = opendir(repository_address)) != NULL)
     {
@@ -106,8 +106,8 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
                 if (compare_repository_and_stage == 0)
                 {
                     printf("%s +", entry->d_name);
-                    char permissions_repository_file[MAX_PERMISSIONS_LENGHT];
-                    char permissions_stage_file[MAX_PERMISSIONS_LENGHT];
+                    char permissions_repository_file[MAX_PERMISSIONS_LENGTH];
+                    char permissions_stage_file[MAX_PERMISSIONS_LENGTH];
                     get_permission(file_repository_address, permissions_repository_file);
                     get_permission(file_stage_address, permissions_stage_file);
                     if (strcmp(permissions_repository_file, permissions_stage_file))
@@ -127,8 +127,8 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
                 int compare_repository_and_commit = compare_file(file_repository_address, file_commit_address);
                 if (compare_repository_and_commit == 0)
                 {
-                    char permissions_repository_file[MAX_PERMISSIONS_LENGHT];
-                    char permissions_commit_file[MAX_PERMISSIONS_LENGHT];
+                    char permissions_repository_file[MAX_PERMISSIONS_LENGTH];
+                    char permissions_commit_file[MAX_PERMISSIONS_LENGTH];
                     get_permission(file_repository_address, permissions_repository_file);
                     get_permission(file_commit_address, permissions_commit_file);
                     if (strcmp(permissions_repository_file, permissions_commit_file))

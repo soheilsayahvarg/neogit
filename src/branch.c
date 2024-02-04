@@ -4,7 +4,7 @@
 
 int run_branch(int argc, char *argv[])
 {
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -13,10 +13,10 @@ int run_branch(int argc, char *argv[])
 
     if (argc == 2)
     {
-        char branch_address[MAX_ADDRESS_LENGHT];
+        char branch_address[MAX_ADDRESS_LENGTH];
         strcpy(branch_address, neogit_dir_address);
         strcat(branch_address, "branch");
-        char branches_address[MAX_ADDRESS_LENGHT];
+        char branches_address[MAX_ADDRESS_LENGTH];
         strcpy(branches_address, neogit_dir_address);
         strcat(branches_address, "branches");
 
@@ -30,7 +30,7 @@ int run_branch(int argc, char *argv[])
             return 0;
         }
 
-        char line_in_branch[MAX_BRANCH_NAME_LENGHT];
+        char line_in_branch[MAX_BRANCH_NAME_LENGTH];
         fgets(line_in_branch, sizeof(line_in_branch), branch_file);
         printf("your branch is %s", line_in_branch);
         printf("all branches:\n");
@@ -55,14 +55,14 @@ int run_branch(int argc, char *argv[])
 
 int add_branch(char branch_name[], char neogit_dir_address[])
 {
-    char branches_address[MAX_ADDRESS_LENGHT];
+    char branches_address[MAX_ADDRESS_LENGTH];
     strcpy(branches_address, neogit_dir_address);
     strcat(branches_address, "branches");
 
     FILE *branches_file;
     branches_file = fopen(branches_address, "r");
 
-    char line_in_branches[MAX_BRANCH_NAME_LENGHT];
+    char line_in_branches[MAX_BRANCH_NAME_LENGTH];
     while (fgets(line_in_branches, sizeof(line_in_branches), branches_file))
     {
         if (line_in_branches[strlen(line_in_branches) - 1] == '\n')
@@ -84,7 +84,7 @@ int add_branch(char branch_name[], char neogit_dir_address[])
 
     // read last commit id
     int last_commit_id = 0;
-    char last_commit_id_address[MAX_ADDRESS_LENGHT];
+    char last_commit_id_address[MAX_ADDRESS_LENGTH];
     strcpy(last_commit_id_address, neogit_dir_address);
     strcat(last_commit_id_address, "last_commit_id");
     FILE *last_commit_id_file = fopen(last_commit_id_address, "r");
@@ -98,14 +98,14 @@ int add_branch(char branch_name[], char neogit_dir_address[])
     sprintf(last_commit_id_string, "%d", last_commit_id);
 
     // open commit datas file
-    char commit_data_address[MAX_ADDRESS_LENGHT];
+    char commit_data_address[MAX_ADDRESS_LENGTH];
     strcpy(commit_data_address, neogit_dir_address);
     strcat(commit_data_address, "commits_data/commit ");
     strcat(commit_data_address, last_commit_id_string);
     FILE *old_commits_data_file = fopen(commit_data_address, "r");
 
     // make new commit data file
-    char new_commit_data_address[MAX_ADDRESS_LENGHT];
+    char new_commit_data_address[MAX_ADDRESS_LENGTH];
     strcpy(new_commit_data_address, commit_data_address);
     strcat(new_commit_data_address, "new");
     FILE *new_commit_data_file = fopen(new_commit_data_address, "w");
@@ -134,14 +134,14 @@ int add_branch(char branch_name[], char neogit_dir_address[])
 
 int read_branch_name(char branch_name[])
 {
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
         return 0;
     }
 
-    char branch_address[MAX_ADDRESS_LENGHT];
+    char branch_address[MAX_ADDRESS_LENGTH];
     strcpy(branch_address, neogit_dir_address);
     strcat(branch_address, "branch");
     FILE *branch_file;
@@ -151,7 +151,7 @@ int read_branch_name(char branch_name[])
         printf("not found branch file\n");
         return 0;
     }
-    fgets(branch_name, MAX_BRANCH_NAME_LENGHT, branch_file);
+    fgets(branch_name, MAX_BRANCH_NAME_LENGTH, branch_file);
     if (branch_name[strlen(branch_name) - 1] == '\n')
     {
         branch_name[strlen(branch_name) - 1] = '\0';

@@ -74,19 +74,19 @@ int add_to_stage(char file_name[])
         if (!strcmp(entry->d_name, file_name))
         {
             // copy file
-            char file_address[MAX_ADDRESS_LENGHT];
+            char file_address[MAX_ADDRESS_LENGTH];
             getcwd(file_address, sizeof(file_address));
             strcat(file_address, "/");
             strcat(file_address, file_name);
 
-            char neogit_dir_address[MAX_ADDRESS_LENGHT];
+            char neogit_dir_address[MAX_ADDRESS_LENGTH];
             if (find_neogit_dir(neogit_dir_address) != 1)
             {
                 printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
                 return 0;
             }
 
-            char all_stage_address[MAX_ADDRESS_LENGHT];
+            char all_stage_address[MAX_ADDRESS_LENGTH];
             strcpy(all_stage_address, neogit_dir_address);
             strcat(all_stage_address, "all_stage");
 
@@ -95,9 +95,9 @@ int add_to_stage(char file_name[])
 
             for (int i = len; i < strlen(file_address); i++)
             {
-                int lenght = strlen(neogit_dir_address);
-                neogit_dir_address[lenght] = file_address[i];
-                neogit_dir_address[lenght + 1] = '\0';
+                int LENGTH = strlen(neogit_dir_address);
+                neogit_dir_address[LENGTH] = file_address[i];
+                neogit_dir_address[LENGTH + 1] = '\0';
             }
 
             char command[MAX_BASH_COMMAND];
@@ -144,10 +144,10 @@ int add_to_stage(char file_name[])
 
 int add_redo()
 {
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) == 1)
     {
-        char all_stage_address[MAX_ADDRESS_LENGHT];
+        char all_stage_address[MAX_ADDRESS_LENGTH];
         strcpy(all_stage_address, neogit_dir_address);
         strcat(all_stage_address, "all_stage");
 
@@ -178,8 +178,8 @@ int add_redo()
 int add_n(int depth, int number_of_tab)
 {
     struct dirent *entry;
-    char first_cwd[MAX_ADDRESS_LENGHT];
-    if (getcwd(first_cwd, MAX_ADDRESS_LENGHT) == NULL)
+    char first_cwd[MAX_ADDRESS_LENGTH];
+    if (getcwd(first_cwd, MAX_ADDRESS_LENGTH) == NULL)
     {
         printf("error getcwd\n");
         return 0;
@@ -207,12 +207,12 @@ int add_n(int depth, int number_of_tab)
             continue;
         }
 
-        char file_address[MAX_ADDRESS_LENGHT];
+        char file_address[MAX_ADDRESS_LENGTH];
         getcwd(file_address, sizeof(file_address));
         strcat(file_address, "/");
         strcat(file_address, entry->d_name);
 
-        char neogit_dir_address[MAX_ADDRESS_LENGHT];
+        char neogit_dir_address[MAX_ADDRESS_LENGTH];
         if (find_neogit_dir(neogit_dir_address) != 1)
         {
             printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -225,9 +225,9 @@ int add_n(int depth, int number_of_tab)
 
         for (int i = len; i < strlen(file_address); i++)
         {
-            int lenght = strlen(neogit_dir_address);
-            neogit_dir_address[lenght] = file_address[i];
-            neogit_dir_address[lenght + 1] = '\0';
+            int LENGTH = strlen(neogit_dir_address);
+            neogit_dir_address[LENGTH] = file_address[i];
+            neogit_dir_address[LENGTH + 1] = '\0';
         }
         for (int i = 0; i < number_of_tab; i++)
         {
@@ -276,14 +276,14 @@ int add_n(int depth, int number_of_tab)
 
 int save_add_command(int argc, char *argv[])
 {
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
         return 0;
     }
 
-    char last_add_address[MAX_ADDRESS_LENGHT];
+    char last_add_address[MAX_ADDRESS_LENGTH];
     strcpy(last_add_address, neogit_dir_address);
     strcat(last_add_address, "last_add");
     FILE *last_add_file = fopen(last_add_address, "r");
@@ -294,7 +294,7 @@ int save_add_command(int argc, char *argv[])
     last_add_file = fopen(last_add_address, "w");
     fprintf(last_add_file, "%d\n", add_number);
 
-    char add_address[MAX_ADDRESS_LENGHT];
+    char add_address[MAX_ADDRESS_LENGTH];
     strcpy(add_address, neogit_dir_address);
     strcat(add_address, "add/add ");
     char add_number_string[MAX_NUMBERS_DIGITS];

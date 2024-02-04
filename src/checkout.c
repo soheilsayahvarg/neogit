@@ -2,9 +2,10 @@
 #include "prototypes.h"
 #include "defines.h"
 
+// TODO: user can't checkout when he/she isn't in the HEAD
 int run_checkout(int argc, char *argv[])
 {
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -19,20 +20,20 @@ int run_checkout(int argc, char *argv[])
     }
 
     int last_commit_id = 0;
-    char last_commit_id_address[MAX_ADDRESS_LENGHT];
+    char last_commit_id_address[MAX_ADDRESS_LENGTH];
     strcpy(last_commit_id_address, neogit_dir_address);
     strcat(last_commit_id_address, "last_commit_id");
     FILE *last_commit_id_file = fopen(last_commit_id_address, "r");
     fscanf(last_commit_id_file, "%d", &last_commit_id);
 
     // get last commit id in branch
-    char branch_name[MAX_BRANCH_NAME_LENGHT];
+    char branch_name[MAX_BRANCH_NAME_LENGTH];
     read_branch_name(branch_name);
 
     int last_commit_id_in_branch = 0;
     for (int i = last_commit_id; i > 0; i--)
     {
-        char commit_data_address[MAX_ADDRESS_LENGHT];
+        char commit_data_address[MAX_ADDRESS_LENGTH];
         strcpy(commit_data_address, neogit_dir_address);
         strcat(commit_data_address, "commits_data/commit ");
         char commit_id_string[MAX_NUMBERS_DIGITS];
@@ -55,7 +56,7 @@ int run_checkout(int argc, char *argv[])
         printf("invalid input\n");
         return 0;
     }
-    // TODO: change branch name
+
     if (!strncmp(argv[2], "commit ", strlen("commit ")))
     {
         int commit_number = 0;
@@ -65,6 +66,34 @@ int run_checkout(int argc, char *argv[])
             printf("commit %d is not a valid commit number\n", commit_number);
             return 0;
         }
+
+        // change branch name
+        char commit_data_address[MAX_ADDRESS_LENGTH];
+        strcpy(commit_data_address, neogit_dir_address);
+        strcat(commit_data_address, "commits_data/commit ");
+        char commit_number_string[MAX_NUMBERS_DIGITS];
+        sprintf(commit_number_string, "%d", commit_number);
+        strcat(commit_data_address, commit_number_string);
+
+        FILE *commit_data_file = fopen(commit_data_address, "r");
+        char line_in_commit_data[MAX_LINE_IN_FILES_LENGTH];
+        fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+        fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
+
+        char branch_name[MAX_BRANCH_NAME_LENGTH];
+        sscanf(line_in_commit_data, "branch : %s ", branch_name);
+        if (branch_name[strlen(branch_name) - 1] == ',')
+        {
+            branch_name[strlen(branch_name) - 1] = '\0';
+        }
+
+        char branch_address[MAX_ADDRESS_LENGTH];
+        strcpy(branch_address, neogit_dir_address);
+        strcat(branch_address, "branch");
+        FILE *branch_file = fopen(branch_address, "w");
+        fprintf(branch_file, "%s\n", branch_name);
+        fclose(branch_file);
+
         return checkout_to_commit(commit_number);
     }
 
@@ -84,7 +113,7 @@ int run_checkout(int argc, char *argv[])
         }
         for (int i = last_commit_id_in_branch;; i--)
         {
-            char commit_data_address[MAX_ADDRESS_LENGHT];
+            char commit_data_address[MAX_ADDRESS_LENGTH];
             strcpy(commit_data_address, neogit_dir_address);
             strcat(commit_data_address, "commits_data/commit ");
             char commit_id_string[MAX_NUMBERS_DIGITS];
@@ -115,7 +144,7 @@ int run_checkout(int argc, char *argv[])
     for (int i = last_commit_id; i > 0; i--)
     {
         FILE *commit_data_file;
-        char commit_data_address[MAX_ADDRESS_LENGHT];
+        char commit_data_address[MAX_ADDRESS_LENGTH];
         strcpy(commit_data_address, neogit_dir_address);
         strcat(commit_data_address, "commits_data/commit ");
         char string_number_of_commit[MAX_NUMBERS_DIGITS];
@@ -133,7 +162,7 @@ int run_checkout(int argc, char *argv[])
         {
             if (checkout_to_commit(i) == 1)
             {
-                char branch_address[MAX_ADDRESS_LENGHT];
+                char branch_address[MAX_ADDRESS_LENGTH];
                 strcpy(branch_address, neogit_dir_address);
                 strcat(branch_address, "branch");
                 FILE *branch_file = fopen(branch_address, "w");
@@ -151,7 +180,7 @@ int run_checkout(int argc, char *argv[])
 
 int checkout_to_commit(int commit_number)
 {
-    char neogit_dir_address[MAX_ADDRESS_LENGHT];
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
     if (find_neogit_dir(neogit_dir_address) != 1)
     {
         printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
@@ -159,7 +188,7 @@ int checkout_to_commit(int commit_number)
     }
 
     // delete all files in repository
-    char repository_address[MAX_ADDRESS_LENGHT];
+    char repository_address[MAX_ADDRESS_LENGTH];
     strcpy(repository_address, neogit_dir_address);
     repository_address[strlen(repository_address) - strlen(".neogit/")] = '\0';
 
@@ -189,7 +218,7 @@ int checkout_to_commit(int commit_number)
     }
 
     // copy files from commit
-    char commit_files_address[MAX_ADDRESS_LENGHT];
+    char commit_files_address[MAX_ADDRESS_LENGTH];
     strcpy(commit_files_address, neogit_dir_address);
     strcat(commit_files_address, "commits_files/commit ");
     char commit_id_string[MAX_NUMBERS_DIGITS];
