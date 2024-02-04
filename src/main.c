@@ -103,6 +103,12 @@ int main(int argc, char *argv[])
         return run_tag(argc, argv);
     }
 
+    // grep
+    if (!strcmp(argv[1], "grep"))
+    {
+        return run_grep(argc, argv);
+    }
+
     // alias
     if (argc == 2)
     {

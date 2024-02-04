@@ -64,6 +64,9 @@ int run_revert(int argc, char *argv[]);
 int run_tag(int argc, char *argv[]);
 int show_all_tag();
 
+// grep
+int run_grep(int argc, char *argv[]);
+
 // alias
 int creat_alias(char alias_address[], char input1[], char input2[]);
 int read_alias(char command[]);
