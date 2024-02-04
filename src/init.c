@@ -132,6 +132,7 @@ int make_neogit_dir(char neogit_dir_address[])
     {
         return 0;
     }
+
     // make add command for reset undo
     char add_address[MAX_ADDRESS_LENGTH];
     strcpy(add_address, neogit_dir_address);
@@ -145,6 +146,7 @@ int make_neogit_dir(char neogit_dir_address[])
     strcat(last_add_address, "last_add");
     FILE *last_add_file = fopen(last_add_address, "w");
     fprintf(last_add_file, "%d\n", 0);
+    fclose(last_add_file);
 
     // make commits
     char commits_files_address[MAX_ADDRESS_LENGTH];
@@ -179,14 +181,23 @@ int make_neogit_dir(char neogit_dir_address[])
     strcpy(is_user_in_the_neogit_commits_message_dir, commits_message_address);
     strcat(is_user_in_the_neogit_commits_message_dir, "is_user_in_the_neogit_commits_message_dir");
     FILE *is_user_in_the_neogit_commits_message_dir_file = fopen(is_user_in_the_neogit_commits_message_dir, "w");
+    fclose(is_user_in_the_neogit_commits_message_dir_file);
 
     char last_commit_id_address[MAX_ADDRESS_LENGTH];
     strcpy(last_commit_id_address, neogit_dir_address);
     strcat(last_commit_id_address, "last_commit_id");
     FILE *last_commit_id_file = fopen(last_commit_id_address, "w");
     fprintf(last_commit_id_file, "%d\n", 0);
+    fclose(last_commit_id_file);
 
-    // make stage
+    // make user is in HEAD
+    char user_is_in_HEAD_address[MAX_ADDRESS_LENGTH];
+    strcpy(user_is_in_HEAD_address, neogit_dir_address);
+    strcat(user_is_in_HEAD_address, "user is in HEAD");
+    FILE *user_is_in_HEAD_file = fopen(user_is_in_HEAD_address, "w");
+    fclose(user_is_in_HEAD_file);
+
+    // make tags
     char tags_address[MAX_ADDRESS_LENGTH];
     strcpy(tags_address, neogit_dir_address);
     strcat(tags_address, "tags/");

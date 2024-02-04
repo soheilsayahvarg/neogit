@@ -2,7 +2,6 @@
 #include "prototypes.h"
 #include "defines.h"
 
-// TODO: user can't checkout when he/she isn't in the HEAD
 int run_checkout(int argc, char *argv[])
 {
     char neogit_dir_address[MAX_ADDRESS_LENGTH];
@@ -12,11 +11,20 @@ int run_checkout(int argc, char *argv[])
         return 0;
     }
 
-    // check untrack files with status
-    if (run_status(argc, argv) == 1)
+    // check user is in HEAD
+    char user_is_in_HEAD_address[MAX_ADDRESS_LENGTH];
+    strcpy(user_is_in_HEAD_address, neogit_dir_address);
+    strcat(user_is_in_HEAD_address, "user is in HEAD");
+    FILE *user_is_in_HEAD_file;
+    if ((user_is_in_HEAD_file = fopen(user_is_in_HEAD_address, "r")) != NULL)
     {
-        printf("you cant checkout, first use commit to save changes\n");
-        return 0;
+        // check untrack files with status
+        if (run_status(argc, argv) == 1)
+        {
+            printf("you cant checkout, first use commit to save changes\n");
+            return 0;
+        }
+        fclose(user_is_in_HEAD_file);
     }
 
     int last_commit_id = 0;
@@ -94,11 +102,15 @@ int run_checkout(int argc, char *argv[])
         fprintf(branch_file, "%s\n", branch_name);
         fclose(branch_file);
 
+        remove(user_is_in_HEAD_address);
+
         return checkout_to_commit(commit_number);
     }
 
     if (!strcmp(argv[2], "HEAD"))
     {
+        user_is_in_HEAD_file = fopen(user_is_in_HEAD_address, "w");
+        fclose(user_is_in_HEAD_file);
         return checkout_to_commit(last_commit_id_in_branch);
     }
 
@@ -130,6 +142,7 @@ int run_checkout(int argc, char *argv[])
             }
             if (head_number == 0)
             {
+                remove(user_is_in_HEAD_address);
                 return checkout_to_commit(i);
             }
             if (i == 0)
@@ -160,17 +173,17 @@ int run_checkout(int argc, char *argv[])
         fgets(line_in_commit_data, sizeof(line_in_commit_data), commit_data_file);
         if (strstr(line_in_commit_data, argv[2]) != NULL)
         {
-            if (checkout_to_commit(i) == 1)
-            {
-                char branch_address[MAX_ADDRESS_LENGTH];
-                strcpy(branch_address, neogit_dir_address);
-                strcat(branch_address, "branch");
-                FILE *branch_file = fopen(branch_address, "w");
-                fprintf(branch_file, "%s\n", argv[2]);
-                printf("checkout to branch %s\n", argv[2]);
-                return 1;
-            }
-            return 0;
+            char branch_address[MAX_ADDRESS_LENGTH];
+            strcpy(branch_address, neogit_dir_address);
+            strcat(branch_address, "branch");
+            FILE *branch_file = fopen(branch_address, "w");
+            fprintf(branch_file, "%s\n", argv[2]);
+            printf("checkout to branch %s\n", argv[2]);
+
+            user_is_in_HEAD_file = fopen(user_is_in_HEAD_address, "w");
+            fclose(user_is_in_HEAD_file);
+
+            return checkout_to_commit(i);
         }
     }
 

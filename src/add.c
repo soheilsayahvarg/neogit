@@ -132,7 +132,7 @@ int add_to_stage(char file_name[])
                 FILE *all_stage_file;
                 all_stage_file = fopen(all_stage_address, "a");
                 fprintf(all_stage_file, "%s\n", command);
-
+                fclose(all_stage_file);
                 return 1;
             }
             return 0;
@@ -157,6 +157,7 @@ int add_redo()
             printf("nothing add to stage\n");
             return 0;
         }
+        fclose(all_stage_file);
 
         char command[MAX_BASH_COMMAND];
         while (fgets(command, sizeof(command), all_stage_file))
@@ -244,6 +245,7 @@ int add_n(int depth, int number_of_tab)
             }
             else
             {
+                fclose(file);
                 printf("+\n");
             }
         }
@@ -291,8 +293,10 @@ int save_add_command(int argc, char *argv[])
     fscanf(last_add_file, "%d", &add_number);
     add_number++;
     fclose(last_add_file);
+
     last_add_file = fopen(last_add_address, "w");
     fprintf(last_add_file, "%d\n", add_number);
+    fclose(last_add_file);
 
     char add_address[MAX_ADDRESS_LENGTH];
     strcpy(add_address, neogit_dir_address);

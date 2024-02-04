@@ -75,6 +75,18 @@ int creat_commit(char message[])
         return 0;
     }
 
+    // check user is in HEAD
+    char user_is_in_HEAD_address[MAX_ADDRESS_LENGTH];
+    strcpy(user_is_in_HEAD_address, neogit_dir_address);
+    strcat(user_is_in_HEAD_address, "user is in HEAD");
+    FILE *user_is_in_HEAD_file;
+    if ((user_is_in_HEAD_file = fopen(user_is_in_HEAD_address, "r")) == NULL)
+    {
+        printf("you can't commit, first checkout to HEAD\n");
+        return 0;
+    }
+    fclose(user_is_in_HEAD_file);
+
     // delete all_stage
     char all_stage_address[MAX_ADDRESS_LENGTH];
     strcpy(all_stage_address, neogit_dir_address);
