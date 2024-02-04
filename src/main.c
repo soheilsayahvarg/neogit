@@ -91,6 +91,13 @@ int main(int argc, char *argv[])
         return run_checkout(argc, argv);
     }
 
+    // revert
+    if (!strcmp(argv[1], "revert"))
+    {
+        return run_revert(argc, argv);
+    }
+
+    // tag
     if (!strcmp(argv[1], "tag"))
     {
         return run_tag(argc, argv);

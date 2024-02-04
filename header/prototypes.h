@@ -35,7 +35,7 @@ int reset_undo();
 int run_status(int argc, char *argv[]);
 int check_status(char repository_address[], char stage_address[], char commit_address[]);
 int compare_file(char file_path_1[], char file_path_2[]);
-char *return_permission(char path[]);
+int get_permission(char path[], char permission[]);
 
 // commit
 int run_commit(int argc, char *argv[]);
@@ -56,6 +56,9 @@ int read_branch_name(char branch_name[]);
 // checkout
 int run_checkout(int argc, char *argv[]);
 int checkout_to_commit(int commit_number);
+
+// revert
+int run_revert(int argc, char *argv[]);
 
 // tag
 int run_tag(int argc, char *argv[]);

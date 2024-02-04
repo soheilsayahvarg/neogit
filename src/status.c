@@ -58,13 +58,17 @@ int run_status(int argc, char *argv[])
     sprintf(commit_id_string, "%d/", last_commit_id_in_branch);
     strcat(commit_address, commit_id_string);
 
-    return check_status(repository_address, stage_address, commit_address);
+    int check_status_number = check_status(repository_address, stage_address, commit_address);
+    if (check_status_number == 0)
+    {
+        printf("status is clear\n");
+    }
+    return check_status_number;
 }
 
-// TODO : check file permissions
 int check_status(char repository_address[], char stage_address[], char commit_address[])
 {
-    static int find_untrack_filess = 0;
+    static int find_untrack_files = 0;
 
     DIR *repository_dir;
     DIR *stage_dir;
@@ -102,36 +106,47 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
                 if (compare_repository_and_stage == 0)
                 {
                     printf("%s +", entry->d_name);
-                    // TODO:
-                    if (strcmp(return_permission(file_repository_address), return_permission(file_stage_address)))
+                    char permissions_repository_file[MAX_PERMISSIONS_LENGHT];
+                    char permissions_stage_file[MAX_PERMISSIONS_LENGHT];
+                    get_permission(file_repository_address, permissions_repository_file);
+                    get_permission(file_stage_address, permissions_stage_file);
+                    if (strcmp(permissions_repository_file, permissions_stage_file))
                     {
                         printf("T");
                     }
                     printf("\n");
-                    find_untrack_filess = 1;
+                    find_untrack_files = 1;
                     continue;
                 }
                 if (compare_repository_and_stage == 1)
                 {
                     printf("%s +M\n", entry->d_name);
-                    find_untrack_filess = 1;
+                    find_untrack_files = 1;
                     continue;
                 }
                 int compare_repository_and_commit = compare_file(file_repository_address, file_commit_address);
                 if (compare_repository_and_commit == 0)
                 {
-                    // printf("%s -\n", entry->d_name);
+                    char permissions_repository_file[MAX_PERMISSIONS_LENGHT];
+                    char permissions_commit_file[MAX_PERMISSIONS_LENGHT];
+                    get_permission(file_repository_address, permissions_repository_file);
+                    get_permission(file_commit_address, permissions_commit_file);
+                    if (strcmp(permissions_repository_file, permissions_commit_file))
+                    {
+                        printf("%s -T\n", entry->d_name);
+                        find_untrack_files = 1;
+                    }
                     continue;
                 }
                 if (compare_repository_and_commit == 1)
                 {
                     printf("%s -M\n", entry->d_name);
-                    find_untrack_filess = 1;
+                    find_untrack_files = 1;
                     continue;
                 }
 
                 printf("%s -A\n", entry->d_name);
-                find_untrack_filess = 1;
+                find_untrack_files = 1;
                 continue;
             }
         }
@@ -166,7 +181,7 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
                 if (compare_repository_and_stage == -1)
                 {
                     printf("%s +D\n", entry->d_name);
-                    // find_untrack_filess = 1;
+                    // find_untrack_files = 1;
                 }
             }
         }
@@ -201,12 +216,12 @@ int check_status(char repository_address[], char stage_address[], char commit_ad
                 if (compare_repository_and_commit == -1)
                 {
                     printf("%s -D\n", entry->d_name);
-                    // find_untrack_filess = 1;
+                    // find_untrack_files = 1;
                 }
             }
         }
     }
-    return find_untrack_filess;
+    return find_untrack_files;
 }
 
 int compare_file(char file_path_1[], char file_path_2[])
@@ -241,11 +256,10 @@ int compare_file(char file_path_1[], char file_path_2[])
     return 0;
 }
 
-char *return_permission(char path[])
+int get_permission(char path[], char permission[])
 {
     struct stat st;
     stat(path, &st);
-    char output[10];
-    sprintf(output, "%X", st.st_mode);
-    return output;
+    sprintf(permission, "%X", st.st_mode);
+    return 1;
 }
