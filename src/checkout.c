@@ -125,6 +125,17 @@ int run_checkout(int argc, char *argv[])
         }
         for (int i = last_commit_id_in_branch;; i--)
         {
+            if (head_number == 0)
+            {
+                remove(user_is_in_HEAD_address);
+                return checkout_to_commit(i);
+            }
+            if (i == 0)
+            {
+                printf("error: invalid HEAD number\n");
+                return 0;
+            }
+
             char commit_data_address[MAX_ADDRESS_LENGTH];
             strcpy(commit_data_address, neogit_dir_address);
             strcat(commit_data_address, "commits_data/commit ");
@@ -139,16 +150,6 @@ int run_checkout(int argc, char *argv[])
             if (strstr(line_in_commit_data, branch_name) != NULL)
             {
                 head_number--;
-            }
-            if (head_number == 0)
-            {
-                remove(user_is_in_HEAD_address);
-                return checkout_to_commit(i);
-            }
-            if (i == 0)
-            {
-                printf("error: invalid HEAD number\n");
-                return 0;
             }
         }
     }
@@ -261,5 +262,5 @@ int checkout_to_commit(int commit_number)
     }
 
     printf("checkout to commit %d\n", commit_number);
-    return 1;
+    return commit_number;
 }
