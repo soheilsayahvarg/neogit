@@ -79,6 +79,8 @@ int hook_character_limit(char file_address[]);
 
 // grep
 int run_grep(int argc, char *argv[]);
+void find_and_replace(char string[], char find[], char replace[]);
+void find_word_and_mark(char string[], char word[]);
 
 // alias
 int creat_alias(char alias_address[], char input1[], char input2[]);

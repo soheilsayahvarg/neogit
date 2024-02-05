@@ -25,7 +25,7 @@ int run_grep(int argc, char *argv[])
         printf("invalid input\n");
         return 0;
     }
-
+    strcat(file_address, "/");
     strcat(file_address, argv[3]);
 
     int show_number_of_line = 0;
@@ -61,5 +61,60 @@ int run_grep(int argc, char *argv[])
         strcat(file_address_in_commit, file_address + strlen(file_address_in_commit) - strlen(".neogit/commits_files/commit / ") - strlen(commit_number_string));
         strcpy(file_address, file_address_in_commit);
     }
-    printf("'%s'", file_address);
+
+    FILE *file = fopen(file_address, "r");
+    if (file == NULL)
+    {
+        printf("not found file\n");
+        return 0;
+    }
+
+    char line[MAX_LINE_IN_FILES_LENGTH];
+    char word[MAX_WORD_IN_GREP_LENGTH];
+    strcpy(word, argv[5]);
+
+    int line_number = 1;
+    while (fgets(line, sizeof(line), file))
+    {
+        strcpy(word, argv[5]);
+        if (show_number_of_line)
+        {
+            printf("%d - ", line_number);
+        }
+        line_number++;
+        find_word_and_mark(line, word);
+        printf("%s", line);
+    }
+}
+
+void find_and_replace(char string[], char find[], char replace[])
+{
+    int pointer = 0;
+    while (strstr(string + pointer, find) != NULL)
+    {
+        pointer = strstr(string + pointer, find) - string;
+        char tmp[strlen(string) + 1];
+        strcpy(tmp, string + pointer + strlen(find));
+        string[pointer] = '\0';
+        strcat(string, replace);
+        strcat(string, tmp);
+        pointer += strlen(replace);
+    }
+}
+
+void find_word_and_mark(char string[], char word[])
+{
+    char new_word[strlen(word) + strlen(RED) + strlen(RESET) + 2];
+
+    strcat(word, " ");
+    char character_end_of_word[] = {' ', '.', ',', ';', ':', '\n', '!', '?', '(', ')', '{', '}', '[', ']', '+', '-', '='};
+
+    for (int i = 0; i < strlen(character_end_of_word); i++)
+    {
+        word[strlen(word) - 1] = character_end_of_word[i];
+        strcpy(new_word, RED);
+        strcat(new_word, word);
+        strcat(new_word, RESET);
+        find_and_replace(string, word, new_word);
+    }
 }
