@@ -15,7 +15,11 @@ int run_pre_commit(int argc, char *argv[])
     if (argc == 2)
     {
         // pre-commit
-        return 1;
+        char stage_files_address[MAX_ADDRESS_LENGTH];
+        strcpy(stage_files_address, neogit_dir_address);
+        strcat(stage_files_address, "stage/");
+
+        return pre_commit_from_stage(stage_files_address);
     }
 
     if (argc == 3)
@@ -207,4 +211,113 @@ int remove_hook(char hook_id[])
 
     printf("remove hook %s from applied hooks\n", hook_id);
     return 1;
+}
+
+int pre_commit_from_stage(char dir_address[])
+{
+    static int dont_find_failed = 1;
+
+    DIR *dir = opendir(dir_address);
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (entry->d_name[0] == '.')
+        {
+            continue;
+        }
+        char file_address[MAX_ADDRESS_LENGTH];
+        strcpy(file_address, dir_address);
+        strcat(file_address, entry->d_name);
+        if (entry->d_type == 4)
+        {
+            dont_find_failed &= pre_commit_from_stage(file_address);
+            continue;
+        }
+
+        dont_find_failed &= check_pre_commit(file_address, entry->d_name);
+    }
+
+    return dont_find_failed;
+}
+
+int check_pre_commit(char file_address[], char file_name[])
+{
+    int dont_find_failed_hook = 1;
+
+    char neogit_dir_address[MAX_ADDRESS_LENGTH];
+    if (find_neogit_dir(neogit_dir_address) != 1)
+    {
+        printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
+        return 0;
+    }
+
+    printf("%s\n", file_name);
+
+    char applied_hooks_address[MAX_ADDRESS_LENGTH];
+    strcpy(applied_hooks_address, neogit_dir_address);
+    strcat(applied_hooks_address, "pre-commit/applied hooks");
+    FILE *applied_hooks_file = fopen(applied_hooks_address, "r");
+
+    char line_in_hooks_file[MAX_HOOKS_ID_LENGTH];
+    while (fgets(line_in_hooks_file, sizeof(line_in_hooks_file), applied_hooks_file))
+    {
+        if (line_in_hooks_file[strlen(line_in_hooks_file) - 1] == '\n')
+        {
+            line_in_hooks_file[strlen(line_in_hooks_file) - 1] = '\0';
+        }
+
+        int check_hook_result = 2;
+
+        if (!strcmp(line_in_hooks_file, "todo-check"))
+        {
+            continue;
+        }
+        else if (!strcmp(line_in_hooks_file, "eof-blank-space"))
+        {
+            continue;
+        }
+        else if (!strcmp(line_in_hooks_file, "format-check"))
+        {
+            continue;
+        }
+        else if (!strcmp(line_in_hooks_file, "balance-braces"))
+        {
+            continue;
+        }
+        else if (!strcmp(line_in_hooks_file, "indentation-check"))
+        {
+            continue;
+        }
+        else if (!strcmp(line_in_hooks_file, "static-error-check"))
+        {
+            continue;
+        }
+        else if (!strcmp(line_in_hooks_file, "file-size-check"))
+        {
+            continue;
+        }
+        else if (!strcmp(line_in_hooks_file, "character-limit"))
+        {
+            continue;
+        }
+        else if (!strcmp(line_in_hooks_file, "time-limit"))
+        {
+            continue;
+        }
+
+        if (check_hook_result == 1)
+        {
+            printf("\"%s\" : \t" GREEN "PASSED\n" RESET, line_in_hooks_file);
+        }
+        else if (check_hook_result == 0)
+        {
+            printf("\"%s\" : \t" BLUE "SKIPPED\n" RESET, line_in_hooks_file);
+        }
+        else if (check_hook_result == -1)
+        {
+            printf("\"%s\" : \t " RED "FAILED\n" RESET, line_in_hooks_file);
+            dont_find_failed_hook = 0;
+        }
+    }
+    fclose(applied_hooks_file);
 }
