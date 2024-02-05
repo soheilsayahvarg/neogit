@@ -64,6 +64,9 @@ int run_revert(int argc, char *argv[]);
 int run_tag(int argc, char *argv[]);
 int show_all_tag();
 
+// pre-commit
+int run_pre_commit(int argc, char *argv[]);
+
 // grep
 int run_grep(int argc, char *argv[]);
 

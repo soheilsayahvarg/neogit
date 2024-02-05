@@ -206,6 +206,35 @@ int make_neogit_dir(char neogit_dir_address[])
         return 0;
     }
 
+    // make pre-commit
+    char pre_commit_address[MAX_ADDRESS_LENGTH];
+    strcpy(pre_commit_address, neogit_dir_address);
+    strcat(pre_commit_address, "pre-commit/");
+    if (mkdir(pre_commit_address, 0755) != 0)
+    {
+        return 0;
+    }
+
+    char hooks_list_address[MAX_ADDRESS_LENGTH];
+    strcpy(hooks_list_address, neogit_dir_address);
+    strcat(hooks_list_address, "pre-commit/hooks list");
+    FILE *hooks_list_file = fopen(hooks_list_address, "w");
+    fprintf(hooks_list_file, "todo-check\neof-blank-space\nformat-check\nbalance-braces\nindentation-check\nstatic-error-check\nfile-size-check\ncharacter-limit\ntime-limit\n");
+    fclose(hooks_list_file);
+
+    char applied_hooks_address[MAX_ADDRESS_LENGTH];
+    strcpy(applied_hooks_address, neogit_dir_address);
+    strcat(applied_hooks_address, "pre-commit/applied hooks");
+    FILE *applied_hooks_file = fopen(applied_hooks_address, "w");
+    fclose(applied_hooks_file);
+
+    char all_format_address[MAX_ADDRESS_LENGTH];
+    strcpy(all_format_address, neogit_dir_address);
+    strcat(all_format_address, "pre-commit/all format");
+    FILE *all_format_file = fopen(all_format_address, "w");
+    fprintf(all_format_file, ".txt .c .cpp .mp3 .mp4 .wav .exe\n");
+    fclose(all_format_file);
+
     // make alias
     char alias_address[MAX_ADDRESS_LENGTH];
     strcpy(alias_address, neogit_dir_address);

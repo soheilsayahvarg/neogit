@@ -103,6 +103,12 @@ int main(int argc, char *argv[])
         return run_tag(argc, argv);
     }
 
+    // pre-commit
+    if (!strcmp(argv[1], "pre-commit"))
+    {
+        return run_pre_commit(argc, argv);
+    }
+
     // grep
     if (!strcmp(argv[1], "grep"))
     {
