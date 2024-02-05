@@ -228,13 +228,6 @@ int make_neogit_dir(char neogit_dir_address[])
     FILE *applied_hooks_file = fopen(applied_hooks_address, "w");
     fclose(applied_hooks_file);
 
-    char all_format_address[MAX_ADDRESS_LENGTH];
-    strcpy(all_format_address, neogit_dir_address);
-    strcat(all_format_address, "pre-commit/all format");
-    FILE *all_format_file = fopen(all_format_address, "w");
-    fprintf(all_format_file, ".txt .c .cpp .mp3 .mp4 .wav .exe\n");
-    fclose(all_format_file);
-
     // make alias
     char alias_address[MAX_ADDRESS_LENGTH];
     strcpy(alias_address, neogit_dir_address);

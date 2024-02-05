@@ -270,19 +270,19 @@ int check_pre_commit(char file_address[], char file_name[])
 
         if (!strcmp(line_in_hooks_file, "todo-check"))
         {
-            continue;
+            check_hook_result = hook_todo_check(file_address);
         }
         else if (!strcmp(line_in_hooks_file, "eof-blank-space"))
         {
-            continue;
+            check_hook_result = hook_eof_blank_space(file_address);
         }
         else if (!strcmp(line_in_hooks_file, "format-check"))
         {
-            continue;
+            check_hook_result = hook_format_check(file_address);
         }
         else if (!strcmp(line_in_hooks_file, "balance-braces"))
         {
-            continue;
+            check_hook_result = hook_balance_braces(file_address);
         }
         else if (!strcmp(line_in_hooks_file, "indentation-check"))
         {
@@ -307,17 +307,150 @@ int check_pre_commit(char file_address[], char file_name[])
 
         if (check_hook_result == 1)
         {
-            printf("\"%s\" : \t" GREEN "PASSED\n" RESET, line_in_hooks_file);
+            printf("\"%s\".............................." GREEN "PASSED\n" RESET, line_in_hooks_file);
         }
         else if (check_hook_result == 0)
         {
-            printf("\"%s\" : \t" BLUE "SKIPPED\n" RESET, line_in_hooks_file);
+            printf("\"%s\".............................." BLUE "SKIPPED\n" RESET, line_in_hooks_file);
         }
         else if (check_hook_result == -1)
         {
-            printf("\"%s\" : \t " RED "FAILED\n" RESET, line_in_hooks_file);
+            printf("\"%s\".............................." RED "FAILED\n" RESET, line_in_hooks_file);
             dont_find_failed_hook = 0;
         }
     }
+    printf("\n");
     fclose(applied_hooks_file);
+}
+
+int hook_todo_check(char file_address[])
+{
+
+    if (strncmp(file_address + strlen(file_address) - strlen(".c"), ".c", strlen(".c")) == 0 ||
+        strncmp(file_address + strlen(file_address) - strlen(".cpp"), ".cpp", strlen(".cpp")) == 0)
+    {
+        FILE *file = fopen(file_address, "r");
+        char line[MAX_LINE_IN_FILES_LENGTH];
+        while (fgets(line, sizeof(line), file))
+        {
+            if (strstr(line, "TODO") != NULL)
+            {
+                return -1;
+            }
+        }
+        return 1;
+    }
+
+    if (strncmp(file_address + strlen(file_address) - strlen(".txt"), ".txt", strlen(".txt")) == 0)
+    {
+        FILE *file = fopen(file_address, "r");
+        char line[MAX_LINE_IN_FILES_LENGTH];
+        while (fgets(line, sizeof(line), file))
+        {
+            if (strstr(line, "TODO") != NULL)
+            {
+                return -1;
+            }
+        }
+        return 1;
+    }
+
+    return 0;
+}
+
+int hook_eof_blank_space(char file_address[])
+{
+    if (strncmp(file_address + strlen(file_address) - strlen(".c"), ".c", strlen(".c")) == 0 ||
+        strncmp(file_address + strlen(file_address) - strlen(".cpp"), ".cpp", strlen(".cpp")) == 0 ||
+        strncmp(file_address + strlen(file_address) - strlen(".txt"), ".txt", strlen(".txt")) == 0)
+    {
+        FILE *file = fopen(file_address, "r");
+        char line[MAX_LINE_IN_FILES_LENGTH];
+        int dont_find_blank_space = 1;
+
+        while (fgets(line, sizeof(line), file))
+        {
+            if (!strcmp(line, "\n"))
+            {
+                dont_find_blank_space = -1;
+                continue;
+            }
+            if (line[strlen(line) - 1] == '\n')
+            {
+                line[strlen(line) - 1] = '\0';
+            }
+            if (line[strlen(line) - 1] == ' ')
+            {
+                dont_find_blank_space = -1;
+                continue;
+            }
+            dont_find_blank_space = 1;
+            continue;
+        }
+        return dont_find_blank_space;
+    }
+    return 0;
+}
+
+int hook_format_check(char file_address[])
+{
+    if (strncmp(file_address + strlen(file_address) - strlen(".c"), ".c", strlen(".c")) == 0 ||
+        strncmp(file_address + strlen(file_address) - strlen(".cpp"), ".cpp", strlen(".cpp")) == 0 ||
+        strncmp(file_address + strlen(file_address) - strlen(".txt"), ".txt", strlen(".txt")) == 0 ||
+        strncmp(file_address + strlen(file_address) - strlen(".mp3"), ".mp3", strlen(".mp3")) == 0 ||
+        strncmp(file_address + strlen(file_address) - strlen(".mp4"), ".mp4", strlen(".mp4")) == 0 ||
+        strncmp(file_address + strlen(file_address) - strlen(".wav"), ".wav", strlen(".wav")) == 0 ||
+        strncmp(file_address + strlen(file_address) - strlen(".exe"), ".exe", strlen(".exe")) == 0)
+    {
+        return 1;
+    }
+    return -1;
+}
+
+int hook_balance_braces(char file_address[])
+{
+    if (strncmp(file_address + strlen(file_address) - strlen(".c"), ".c", strlen(".c")) == 0 ||
+        strncmp(file_address + strlen(file_address) - strlen(".cpp"), ".cpp", strlen(".cpp")) == 0 ||
+        strncmp(file_address + strlen(file_address) - strlen(".txt"), ".txt", strlen(".txt")) == 0)
+    {
+        FILE *file = fopen(file_address, "r");
+        int braces = 0, brackets = 0, parentheses = 0;
+        char character = '!';
+
+        while ((character = fgetc(file)) != EOF)
+        {
+            if (character == '{')
+            {
+                braces++;
+            }
+            else if (character == '}')
+            {
+                braces--;
+            }
+            else if (character == '[')
+            {
+                brackets++;
+            }
+            else if (character == ']')
+            {
+                brackets--;
+            }
+            else if (character == '(')
+            {
+                parentheses++;
+            }
+            else if (character == ')')
+            {
+                parentheses--;
+            }
+        }
+
+        if (braces == 0 && brackets == 0 && parentheses == 0)
+        {
+            return 1;
+        }
+
+        return -1;
+    }
+    return 0;
 }
