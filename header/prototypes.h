@@ -66,6 +66,8 @@ int show_all_tag();
 
 // pre-commit
 int run_pre_commit(int argc, char *argv[]);
+int add_hook(char hook_id[]);
+int remove_hook(char hook_id[]);
 
 // grep
 int run_grep(int argc, char *argv[]);
