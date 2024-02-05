@@ -87,7 +87,7 @@ int creat_commit(char message[])
     }
     fclose(user_is_in_HEAD_file);
 
-    // delete all_stage
+    // check all_stage
     char all_stage_address[MAX_ADDRESS_LENGTH];
     strcpy(all_stage_address, neogit_dir_address);
     strcat(all_stage_address, "all_stage");
@@ -97,6 +97,18 @@ int creat_commit(char message[])
         printf("stage is empty\n");
         return 0;
     }
+
+    // check pre-commit
+    char stage_files_address[MAX_ADDRESS_LENGTH];
+    strcpy(stage_files_address, neogit_dir_address);
+    strcat(stage_files_address, "stage/");
+    if (pre_commit_from_stage(stage_files_address) == 0)
+    {
+        printf("you cant commit\n");
+        return 0;
+    }
+
+    // delete all_stage
     fclose(all_stage_file);
     strcpy(command, "rm -f \"");
     strcat(command, all_stage_address);
@@ -191,7 +203,6 @@ int creat_commit(char message[])
     }
 
     // copy stage
-    char stage_files_address[MAX_ADDRESS_LENGTH];
     strcpy(stage_files_address, neogit_dir_address);
     strcat(stage_files_address, "stage/");
     dir = opendir(stage_files_address);

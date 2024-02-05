@@ -67,6 +67,27 @@ int run_pre_commit(int argc, char *argv[])
 
     if (!strcmp(argv[2], "-f"))
     {
+        for (int i = 3; i < argc; i++)
+        {
+            printf("%s", argv[i]);
+            char file_address[MAX_ADDRESS_LENGTH];
+            getcwd(file_address, sizeof(file_address));
+            strcat(file_address, argv[i]);
+
+            char file_address_in_stage[MAX_ADDRESS_LENGTH];
+            strcpy(file_address_in_stage, neogit_dir_address);
+            strcat(file_address_in_stage, "stage/");
+            strcat(file_address_in_stage, file_address + strlen(file_address_in_stage) - strlen(".neogit/stage") - 2);
+
+            FILE *file;
+            if ((file = fopen(file_address_in_stage, "r")) == NULL)
+            {
+                printf("can't found file in stage\n");
+                return 0;
+            }
+            fclose(file);
+            check_pre_commit(file_address_in_stage);
+        }
         return 1;
     }
 
@@ -294,11 +315,11 @@ int check_pre_commit(char file_address[], char file_name[])
         }
         else if (!strcmp(line_in_hooks_file, "file-size-check"))
         {
-            continue;
+            check_hook_result = hook_file_size_check(file_address);
         }
         else if (!strcmp(line_in_hooks_file, "character-limit"))
         {
-            continue;
+            check_hook_result = hook_character_limit(file_address);
         }
         else if (!strcmp(line_in_hooks_file, "time-limit"))
         {
@@ -321,6 +342,7 @@ int check_pre_commit(char file_address[], char file_name[])
     }
     printf("\n");
     fclose(applied_hooks_file);
+    return dont_find_failed_hook;
 }
 
 int hook_todo_check(char file_address[])
@@ -335,9 +357,11 @@ int hook_todo_check(char file_address[])
         {
             if (strstr(line, "TODO") != NULL)
             {
+                fclose(file);
                 return -1;
             }
         }
+        fclose(file);
         return 1;
     }
 
@@ -387,6 +411,7 @@ int hook_eof_blank_space(char file_address[])
             dont_find_blank_space = 1;
             continue;
         }
+        fclose(file);
         return dont_find_blank_space;
     }
     return 0;
@@ -445,12 +470,51 @@ int hook_balance_braces(char file_address[])
             }
         }
 
+        fclose(file);
         if (braces == 0 && brackets == 0 && parentheses == 0)
         {
             return 1;
         }
 
         return -1;
+    }
+    return 0;
+}
+
+int hook_file_size_check(char file_address[])
+{
+    FILE *file = fopen(file_address, "r");
+    fseek(file, 0, SEEK_END);
+    unsigned long long res = ftell(file);
+    fclose(file);
+
+    if (res > MAX_SIZE_FILE_FOR_HOOKS)
+    {
+        return -1;
+    }
+    return 1;
+}
+
+int hook_character_limit(char file_address[])
+{
+    if (strncmp(file_address + strlen(file_address) - strlen(".c"), ".c", strlen(".c")) == 0 ||
+        strncmp(file_address + strlen(file_address) - strlen(".cpp"), ".cpp", strlen(".cpp")) == 0 ||
+        strncmp(file_address + strlen(file_address) - strlen(".txt"), ".txt", strlen(".txt")) == 0)
+    {
+        FILE *file = fopen(file_address, "r");
+        int number_of_characters = 0;
+        char character = '!';
+
+        while ((character = fgetc(file)) != EOF)
+        {
+            number_of_characters++;
+        }
+
+        if (number_of_characters > MAX_CHARACTER_LIMIT_IN_HOOKS)
+        {
+            return -1;
+        }
+        return 1;
     }
     return 0;
 }

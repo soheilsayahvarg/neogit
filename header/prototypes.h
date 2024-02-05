@@ -66,12 +66,16 @@ int show_all_tag();
 
 // pre-commit
 int run_pre_commit(int argc, char *argv[]);
+
 int add_hook(char hook_id[]);
 int remove_hook(char hook_id[]);
+
 int hook_todo_check(char file_address[]);
 int hook_eof_blank_space(char file_address[]);
 int hook_format_check(char file_address[]);
 int hook_balance_braces(char file_address[]);
+int hook_file_size_check(char file_address[]);
+int hook_character_limit(char file_address[]);
 
 // grep
 int run_grep(int argc, char *argv[]);

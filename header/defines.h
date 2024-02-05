@@ -35,6 +35,8 @@
 #define MAX_NUMBER_OF_TAGS 20
 
 #define MAX_HOOKS_ID_LENGTH 30
+#define MAX_SIZE_FILE_FOR_HOOKS 5120
+#define MAX_CHARACTER_LIMIT_IN_HOOKS 20000
 
 #define NEOGIT_GLOBAL_ADDRESS "/home/soheil/Drive_D/Soheil/Study/University/CE/FOP/Project/neogit/.neogit-global/"
 
