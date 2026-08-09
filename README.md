@@ -35,11 +35,11 @@ Linux (or WSL). The code uses POSIX APIs — `dirent.d_type`, `mkdir(path, mode)
 `chdir`, `getcwd` — so it does not build on Windows with MinGW.
 
 ```bash
-gcc -I header src/*.c -o neogit
+make
 ```
 
-Before the first build, edit `NEOGIT_GLOBAL_ADDRESS` in `header/defines.h` to point at
-this repository's `.neogit-global/` directory — see [Known limitations](#known-limitations).
+No configuration needed. Global settings live in `$HOME/.neogit-global/`, which is
+created on first use. To run `neogit` from anywhere, put the built binary on your `PATH`.
 
 ---
 
@@ -170,7 +170,7 @@ no hashing — every commit stores a full copy of its files. That is deliberatel
 than Git's content-addressed model, and the tradeoff is discussed under
 [Known limitations](#known-limitations).
 
-```
+```text
 .neogit/
 ├── config                    # repository-local user.name / user.email
 ├── alias/                    # command aliases
@@ -188,7 +188,7 @@ than Git's content-addressed model, and the tradeoff is discussed under
 
 Commit metadata is stored as readable text, one field per line:
 
-```
+```text
 username : soheil, useremail : soheilsayahvarg@gmail.com
 branch : master
 message : initial commit
@@ -223,9 +223,9 @@ These are real and worth stating plainly rather than leaving for a reader to dis
 
 - **Linux only.** POSIX-specific calls (`dirent.d_type`, `mkdir` with a mode argument)
   mean the code does not compile on Windows without changes.
-- **`NEOGIT_GLOBAL_ADDRESS` is a hardcoded absolute path** in `header/defines.h`, left
-  over from the machine this was developed on. It must be edited before building, which
-  is the first thing I would fix if I revisited this.
+- **Exit codes follow an internal convention, not the POSIX one.** Commands return `1`
+  for success and `0` for failure, which is inverted from what a shell expects, so
+  `neogit init && neogit add -f x` does not chain correctly.
 - **Snapshots are full file copies.** Storage grows linearly with the number of commits
   rather than with the amount of changed content. Git solves this with content-addressed
   blobs; that was out of scope here.
