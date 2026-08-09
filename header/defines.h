@@ -40,6 +40,8 @@
 #define MAX_SIZE_FILE_FOR_HOOKS 5120
 #define MAX_CHARACTER_LIMIT_IN_HOOKS 20000
 
-#define NEOGIT_GLOBAL_ADDRESS "/home/soheil/Drive_D/Soheil/Study/University/CE/FOP/Project/neogit/.neogit-global/"
+// The global configuration lives in the user's home directory. The path is
+// resolved at runtime by neogit_global_dir(); see src/config.c.
+#define NEOGIT_GLOBAL_DIR_NAME ".neogit-global"
 
 #endif

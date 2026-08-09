@@ -2,6 +2,54 @@
 #include "prototypes.h"
 #include "defines.h"
 
+// Resolve the global configuration directory, "$HOME/.neogit-global/", creating
+// it and its default contents on first use. The result is cached, so callers can
+// treat this as a plain string lookup.
+const char *neogit_global_dir()
+{
+    static char global_dir[MAX_ADDRESS_LENGTH];
+
+    if (global_dir[0] != '\0')
+    {
+        return global_dir;
+    }
+
+    const char *home = getenv("HOME");
+    if (home == NULL)
+    {
+        home = ".";
+    }
+
+    char base[MAX_ADDRESS_LENGTH];
+    snprintf(base, sizeof(base), "%s/%s", home, NEOGIT_GLOBAL_DIR_NAME);
+    mkdir(base, 0755);
+
+    char alias_dir[MAX_ADDRESS_LENGTH];
+    snprintf(alias_dir, sizeof(alias_dir), "%s/alias", base);
+    mkdir(alias_dir, 0755);
+
+    // read_user_config() expects the global config to exist and to hold two
+    // lines, so seed it with the "nothing" sentinel the rest of the code checks.
+    char config_path[MAX_ADDRESS_LENGTH];
+    snprintf(config_path, sizeof(config_path), "%s/config", base);
+    FILE *config_file = fopen(config_path, "r");
+    if (config_file == NULL)
+    {
+        config_file = fopen(config_path, "w");
+        if (config_file != NULL)
+        {
+            fprintf(config_file, "username : nothing\nuseremail : nothing");
+        }
+    }
+    if (config_file != NULL)
+    {
+        fclose(config_file);
+    }
+
+    snprintf(global_dir, sizeof(global_dir), "%s/", base);
+    return global_dir;
+}
+
 int run_config(int argc, char *argv[])
 {
 
@@ -11,17 +59,18 @@ int run_config(int argc, char *argv[])
         if (strcmp(argv[3], "user.name") == 0 || strcmp(argv[3], "user.email") == 0)
         {
             char global_config_address[MAX_ADDRESS_LENGTH];
-            strcpy(global_config_address, NEOGIT_GLOBAL_ADDRESS);
+            strcpy(global_config_address, neogit_global_dir());
             strcat(global_config_address, "config");
             char global_new_config_address[MAX_ADDRESS_LENGTH];
-            strcpy(global_new_config_address, NEOGIT_GLOBAL_ADDRESS);
+            strcpy(global_new_config_address, neogit_global_dir());
             strcat(global_new_config_address, "new_config");
             return creat_config(global_config_address, global_new_config_address, argv[3], argv[4]);
         }
 
         if (!strncmp(argv[3], "alias.", 6))
         {
-            char global_alias_address[MAX_ADDRESS_LENGTH] = NEOGIT_GLOBAL_ADDRESS;
+            char global_alias_address[MAX_ADDRESS_LENGTH];
+            strcpy(global_alias_address, neogit_global_dir());
             strcat(global_alias_address, "alias/");
             return creat_alias(global_alias_address, argv[3], argv[4]);
         }
@@ -35,7 +84,7 @@ int run_config(int argc, char *argv[])
         if (strcmp(argv[2], "user.name") == 0 || strcmp(argv[2], "user.email") == 0)
         {
             char neogit_dir_address[MAX_ADDRESS_LENGTH];
-            if (find_neogit_dir(neogit_dir_address) == 1)
+            if (find_neogit_dir(neogit_dir_address) != 1)
             {
                 printf("not found neogit dir, first make a neogit dir with \"neogit init\"\n");
                 return 0;
@@ -100,7 +149,7 @@ int creat_config(char config_address[], char new_config_address[], char input1[]
             config = fopen(config_address, "w");
             fprintf(config, "username : %s\nuseremail : nothing", input2);
             fclose(config);
-            printf("global username set : \"%s\"\n", input2);
+            printf("username set : \"%s\"\n", input2);
             return 1;
         }
 
@@ -118,7 +167,7 @@ int creat_config(char config_address[], char new_config_address[], char input1[]
         remove(config_address);
         rename(new_config_address, config_address);
 
-        printf("global username set : \"%s\"\n", input2);
+        printf("username set : \"%s\"\n", input2);
         return 1;
     }
 
@@ -142,7 +191,7 @@ int creat_config(char config_address[], char new_config_address[], char input1[]
             config = fopen(config_address, "w");
             fprintf(config, "username : nothing\nuseremail : %s", input2);
             fclose(config);
-            printf("global useremail set : \"%s\"\n", input2);
+            printf("useremail set : \"%s\"\n", input2);
             return 1;
         }
 
@@ -159,7 +208,7 @@ int creat_config(char config_address[], char new_config_address[], char input1[]
         remove(config_address);
         rename(new_config_address, config_address);
 
-        printf("global useremail set : \"%s\"\n", input2);
+        printf("useremail set : \"%s\"\n", input2);
         return 1;
     }
 
@@ -192,7 +241,8 @@ int read_alias(char command[])
     FILE *alias_file;
 
     // check global alias
-    char global_alias_address[MAX_ADDRESS_LENGTH] = NEOGIT_GLOBAL_ADDRESS;
+    char global_alias_address[MAX_ADDRESS_LENGTH];
+    strcpy(global_alias_address, neogit_global_dir());
     strcat(global_alias_address, "alias/");
     strcat(global_alias_address, command);
 
@@ -240,14 +290,18 @@ int read_user_config(char username[], char useremail[])
     FILE *config;
     // read global config
     char global_config_address[MAX_ADDRESS_LENGTH];
-    strcpy(global_config_address, NEOGIT_GLOBAL_ADDRESS);
+    strcpy(global_config_address, neogit_global_dir());
     strcat(global_config_address, "config");
 
     config = fopen(global_config_address, "r");
-    fgets(line_in_config, sizeof(line_in_config), config);
-    sscanf(line_in_config, "username : %s", username);
-    fgets(line_in_config, sizeof(line_in_config), config);
-    sscanf(line_in_config, "useremail : %s", useremail);
+    if (config != NULL)
+    {
+        fgets(line_in_config, sizeof(line_in_config), config);
+        sscanf(line_in_config, "username : %s", username);
+        fgets(line_in_config, sizeof(line_in_config), config);
+        sscanf(line_in_config, "useremail : %s", useremail);
+        fclose(config);
+    }
 
     if (strcmp(username, "nothing") != 0 && strcmp(useremail, "nothing") != 0)
     {

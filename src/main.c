@@ -2,24 +2,8 @@
 #include "prototypes.h"
 #include "defines.h"
 
-#define TES
-#ifdef TEST
-int main()
-{
-    int argc = 1;
-    char *argv[] = {"neogit"};
-
-#else
 int main(int argc, char *argv[])
 {
-#endif
-
-    for (int i = 0; i < argc; i++)
-    {
-        printf("%s ", argv[i]);
-    }
-    printf("\n");
-
     if (argc == 1)
     {
         return about_neogit();

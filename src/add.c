@@ -157,17 +157,18 @@ int add_redo()
             printf("nothing add to stage\n");
             return 0;
         }
-        fclose(all_stage_file);
 
         char command[MAX_BASH_COMMAND];
         while (fgets(command, sizeof(command), all_stage_file))
         {
             if (command[strlen(command) - 1] == '\n')
             {
-                command[strlen(command) - 1] == '\0';
+                command[strlen(command) - 1] = '\0';
             }
             system(command);
         }
+        fclose(all_stage_file);
+
         printf("redo all file\n");
         return 1;
     }

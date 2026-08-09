@@ -11,6 +11,7 @@ int find_neogit_dir(char cwd[]);
 int comprator_time(char date1_string[], char date2_string[]);
 
 // config
+const char *neogit_global_dir();
 int run_config(int argc, char *argv[]);
 int creat_config(char config_address[], char new_config_address[], char input1[], char input2[]);
 int read_user_config(char username[], char useremail[]);
@@ -74,8 +75,11 @@ int hook_todo_check(char file_address[]);
 int hook_eof_blank_space(char file_address[]);
 int hook_format_check(char file_address[]);
 int hook_balance_braces(char file_address[]);
+int hook_indentation_check(char file_address[]);
+int hook_static_error_check(char file_address[]);
 int hook_file_size_check(char file_address[]);
 int hook_character_limit(char file_address[]);
+int hook_time_limit(char file_address[]);
 
 // grep
 int run_grep(int argc, char *argv[]);

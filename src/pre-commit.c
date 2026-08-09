@@ -307,11 +307,11 @@ int check_pre_commit(char file_address[], char file_name[])
         }
         else if (!strcmp(line_in_hooks_file, "indentation-check"))
         {
-            continue;
+            check_hook_result = hook_indentation_check(file_address);
         }
         else if (!strcmp(line_in_hooks_file, "static-error-check"))
         {
-            continue;
+            check_hook_result = hook_static_error_check(file_address);
         }
         else if (!strcmp(line_in_hooks_file, "file-size-check"))
         {
@@ -323,7 +323,7 @@ int check_pre_commit(char file_address[], char file_name[])
         }
         else if (!strcmp(line_in_hooks_file, "time-limit"))
         {
-            continue;
+            check_hook_result = hook_time_limit(file_address);
         }
 
         if (check_hook_result == 1)
@@ -481,6 +481,22 @@ int hook_balance_braces(char file_address[])
     return 0;
 }
 
+// The three hooks below are registered with the dispatcher so that they can be
+// enabled and listed, but the checks themselves are not implemented. They report
+// SKIPPED rather than silently passing, so a commit is never gated on a check
+// that did not actually run.
+int hook_indentation_check(char file_address[])
+{
+    (void)file_address;
+    return 0;
+}
+
+int hook_static_error_check(char file_address[])
+{
+    (void)file_address;
+    return 0;
+}
+
 int hook_file_size_check(char file_address[])
 {
     FILE *file = fopen(file_address, "r");
@@ -516,5 +532,11 @@ int hook_character_limit(char file_address[])
         }
         return 1;
     }
+    return 0;
+}
+
+int hook_time_limit(char file_address[])
+{
+    (void)file_address;
     return 0;
 }
