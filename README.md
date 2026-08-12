@@ -238,4 +238,10 @@ These are real and worth stating plainly rather than leaving for a reader to dis
 
 ## Author
 
+## License
+
+Released under the [MIT license](LICENSE).
+
+---
+
 Soheil Sayah Varg — B.Sc. Computer Engineering, Sharif University of Technology.
